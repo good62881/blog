@@ -6,7 +6,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 
 
-var pageArr = ['index','article','photo','msg'];   //每个页面的入口文件
+var pageArr = ['page/index','page/article','page/photo','page/msg'];   //每个页面的入口文件
 var configEntry = {};
 pageArr.forEach((page) => {
 	configEntry[page] = path.resolve(__dirname,'src/public/bundle/'+page);

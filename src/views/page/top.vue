@@ -4,7 +4,7 @@
 	<div class="nav">
 		<ul class="fix">
 			<li><a href="/">文章</a></li>
-			<li><a href="">代码</a></li>
+			<li><a href="">实例</a></li>
 			<li><a href="">照片</a></li>
 			<li><a href="">留言</a></li>
 			<li><a href="">关于我</a></li>
@@ -15,7 +15,7 @@
 
 
 <style lang="less" rel="stylesheet/less"> 
-.top{background: url("../public/images/bg.jpg") no-repeat center top; padding-top: 300px;}
+.top{background: url("../../public/images/bg.jpg") no-repeat center top; padding-top: 300px;}
 
 .nav{
 	background: #1f7fbb;

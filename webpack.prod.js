@@ -6,7 +6,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 
 
-var pageArr = ['index','article','photo','msg'];
+var pageArr = ['page/index','page/article','page/photo','page/msg'];
 var configEntry = {};
 pageArr.forEach((page) => {
 	configEntry[page] = path.resolve(__dirname,'src/public/bundle/'+page);

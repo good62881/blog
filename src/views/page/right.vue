@@ -2,13 +2,18 @@
 <template>
 <div class="right">
 	<div class="right_avatar">
-		<img src="../public/images/avatar.jpg" alt="">
+		<img src="../../public/images/avatar.jpg" alt="">
 	</div>
 	<div class="right_num">
 		<p>文章<br>245</p><p>照片<br>356</p><p>留言<br>6641</p>
 	</div>
 	<div class="right_search">
-		<el-input placeholder="请输入搜索内容" icon="search"></el-input>
+		<el-input placeholder="请输入搜索内容" icon="search" size="mini">
+			<el-select slot="prepend">
+				<el-option label="文章" value="1"></el-option>
+				<el-option label="实例" value="2"></el-option>
+			</el-select>
+		</el-input>
 	</div>
 	<dl class="right_me">
 		<dt><a href="#">更多</a>关于我</dt>
@@ -86,7 +91,7 @@ export default {
 
 <style lang="less" rel="stylesheet/less"> 
 .right{
-	width:190px; float: right; padding:20px; margin-top: -281px; background: #fff; border: 1px solid #d8d6d6; border-radius:115px 115px 0 0;
+	width:190px; float: right; padding:20px 20px 0 20px; margin-top: -281px; background: #fff; border: 1px solid #d8d6d6; border-radius:115px 115px 0 0;
 	&_avatar,&_num,&_search,&_me,&_list{ margin-bottom: 20px;}
 	&_avatar{
 		text-align: center; height: 130px; overflow: hidden;
@@ -99,7 +104,10 @@ export default {
 			&:last-child{ border-right:none; }
 		}
 	}
-	&_search{ margin-left: -21px; margin-right: -21px; padding: 0 21px; line-height: 40px; background-color: #1f7fbb;}
+	&_search{
+		margin-left: -21px; margin-right: -21px; line-height: 40px; background-color: #1f7fbb;
+		.el-select{ width:80px;}
+	}
 	&_me{
 		dt{
 			border-left: 3px solid #cf2730; font-size: 16px; line-height: 1; padding-left: 10px; margin-bottom: 10px;

@@ -13,8 +13,11 @@ app.set('views','./out/views');
 
 
 //引入路由配置文件
-require('./routes')(app);
-
+require('./routes/page')(app);
+//404处理
+app.get('*', function(req, res){
+	res.redirect('/')
+});
 
 http.listen(3000,function() {
 	console.log('服务器正常启动于3000端口！')

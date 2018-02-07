@@ -1,4 +1,5 @@
 import '../../css/common.less';
+import '../../font/iconfont.css';
 import '../../css/page/index.less';
 
 //vue相关

@@ -8,7 +8,7 @@
 		<p>文章<br>245</p><p>照片<br>356</p><p>留言<br>6641</p>
 	</div>
 	<div class="right_search">
-		<el-input placeholder="请输入搜索内容" icon="search" size="mini">
+		<el-input placeholder="请输入搜索内容" size="mini">
 			<el-select slot="prepend">
 				<el-option label="文章" value="1"></el-option>
 				<el-option label="实例" value="2"></el-option>
@@ -19,7 +19,7 @@
 		<dt><a href="#">更多</a>关于我</dt>
 		<dd>昵称：豆芽</dd>
 		<dd>年龄：保密</dd>
-		<dd>职业：底层码农</dd>
+		<dd>职业：码农</dd>
 		<dd>邮箱：good62881@163.com</dd>
 	</dl>
 	<c-calendar :dayData="{'2017/12/6':10,'2017/12/3':20}" :monthData="{'2017/12':120,'2017/2':20}" :yearData="{'2016':12,'2014':20}" @cbDate="cbDate"></c-calendar>
@@ -43,7 +43,7 @@
 		<dd><span>03-17</span><a href="">哈哈哈哈哈</a></dd>
 	</dl>
 	<dl class="right_list">
-		<dt><a href="#">更多</a>最新代码</dt>
+		<dt><a href="#">更多</a>最新实例</dt>
 		<dd><span>05-20</span><a href="">哈哈哈哈哈哈哈</a></dd>
 		<dd><span>05-07</span><a href="">哈哈哈哈</a></dd>
 		<dd><span>05-01</span><a href="">哈哈哈哈哈哈哈哈哈哈</a></dd>
@@ -89,7 +89,7 @@ export default {
 }
 </script>
 
-<style lang="less" rel="stylesheet/less"> 
+<style scoped lang="less" rel="stylesheet/less"> 
 .right{
 	width:190px; float: right; padding:20px 20px 0 20px; margin-top: -281px; background: #fff; border: 1px solid #d8d6d6; border-radius:115px 115px 0 0;
 	&_avatar,&_num,&_search,&_me,&_list{ margin-bottom: 20px;}

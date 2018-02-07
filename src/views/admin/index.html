@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>首页</title>
+</head>
+<body>
+
+<div id="app" v-cloak>
+	<c-top :user-info.sync="userInfo"></c-top>
+
+	<el-row class="oh">
+		<c-nav :now="navNow"></c-nav>
+		<el-col :span="20" class="main">
+			<div class="info">
+				<img :src="userInfo.avatar" alt="">
+				<h1>{{userInfo.name}}</h1>
+				<p>共有0篇[<a href="/" target="_blank" >文章</a>]</p>
+			</div>
+		</el-col>
+	</el-row>
+
+</div>
+
+
+</body>
+</html>

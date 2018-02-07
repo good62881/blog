@@ -8,16 +8,16 @@
 
     <style type="text/css">
 
-        @font-face {font-family: "iconfont";
+        @font-face {font-family: "el-iconadd";
           src: url('iconfont.eot'); /* IE9*/
           src: url('iconfont.eot#iefix') format('embedded-opentype'), /* IE6-IE8 */
           url('iconfont.woff') format('woff'), /* chrome, firefox */
           url('iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-          url('iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+          url('iconfont.svg#el-iconadd') format('svg'); /* iOS 4.1- */
         }
 
-        .iconfont {
-          font-family:"iconfont" !important;
+        .el-iconadd {
+          font-family:"el-iconadd" !important;
           font-size:16px;
           font-style:normal;
           -webkit-font-smoothing: antialiased;
@@ -33,69 +33,21 @@
         <ul class="icon_lists clear">
             
                 <li>
-                <i class="icon iconfont">&#xe643;</i>
-                    <div class="name">点</div>
-                    <div class="code">&amp;#xe643;</div>
+                <i class="icon el-iconadd">&#xe604;</i>
+                    <div class="name">用户</div>
+                    <div class="code">&amp;#xe604;</div>
                 </li>
             
                 <li>
-                <i class="icon iconfont">&#xe6a3;</i>
-                    <div class="name">账号</div>
-                    <div class="code">&amp;#xe6a3;</div>
+                <i class="icon el-iconadd">&#xe624;</i>
+                    <div class="name">退出</div>
+                    <div class="code">&amp;#xe624;</div>
                 </li>
             
                 <li>
-                <i class="icon iconfont">&#xe6a5;</i>
-                    <div class="name">地址</div>
-                    <div class="code">&amp;#xe6a5;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6a6;</i>
-                    <div class="name">密码</div>
-                    <div class="code">&amp;#xe6a6;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6a7;</i>
-                    <div class="name">手机</div>
-                    <div class="code">&amp;#xe6a7;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe69f;</i>
-                    <div class="name">勾</div>
-                    <div class="code">&amp;#xe69f;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe67d;</i>
-                    <div class="name">加</div>
-                    <div class="code">&amp;#xe67d;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6c4;</i>
-                    <div class="name">nav2</div>
-                    <div class="code">&amp;#xe6c4;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6c5;</i>
-                    <div class="name">nav1</div>
-                    <div class="code">&amp;#xe6c5;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6c6;</i>
-                    <div class="name">nav4</div>
-                    <div class="code">&amp;#xe6c6;</div>
-                </li>
-            
-                <li>
-                <i class="icon iconfont">&#xe6c7;</i>
-                    <div class="name">nav3</div>
-                    <div class="code">&amp;#xe6c7;</div>
+                <i class="icon el-iconadd">&#xe6b8;</i>
+                    <div class="name">首页</div>
+                    <div class="code">&amp;#xe6b8;</div>
                 </li>
             
         </ul>
@@ -114,17 +66,17 @@
         <p>unicode使用步骤如下：</p>
         <h3 id="-font-face">第一步：拷贝项目下面生成的font-face</h3>
         <pre><code class="lang-js hljs javascript">@font-face {
-  font-family: <span class="hljs-string">'iconfont'</span>;
+  font-family: <span class="hljs-string">'el-iconadd'</span>;
   src: url(<span class="hljs-string">'iconfont.eot'</span>);
   src: url(<span class="hljs-string">'iconfont.eot?#iefix'</span>) format(<span class="hljs-string">'embedded-opentype'</span>),
   url(<span class="hljs-string">'iconfont.woff'</span>) format(<span class="hljs-string">'woff'</span>),
   url(<span class="hljs-string">'iconfont.ttf'</span>) format(<span class="hljs-string">'truetype'</span>),
-  url(<span class="hljs-string">'iconfont.svg#iconfont'</span>) format(<span class="hljs-string">'svg'</span>);
+  url(<span class="hljs-string">'iconfont.svg#el-iconadd'</span>) format(<span class="hljs-string">'svg'</span>);
 }
 </code></pre>
         <h3 id="-iconfont-">第二步：定义使用iconfont的样式</h3>
-        <pre><code class="lang-js hljs javascript">.iconfont{
-  font-family:<span class="hljs-string">"iconfont"</span> !important;
+        <pre><code class="lang-js hljs javascript">.el-iconadd{
+  font-family:<span class="hljs-string">"el-iconadd"</span> !important;
   font-size:<span class="hljs-number">16</span>px;font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: <span class="hljs-number">0.2</span>px;
@@ -132,10 +84,10 @@
 }
 </code></pre>
         <h3 id="-">第三步：挑选相应图标并获取字体编码，应用于页面</h3>
-        <pre><code class="lang-js hljs javascript">&lt;i <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"iconfont"</span>&gt;&amp;#x33;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span></span></code></pre>
+        <pre><code class="lang-js hljs javascript">&lt;i <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"el-iconadd"</span>&gt;&amp;#x33;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span></span></code></pre>
 
         <blockquote>
-        <p>"iconfont"是你项目下的font-family。可以通过编辑项目查看，默认是"iconfont"。</p>
+        <p>"el-iconadd"是你项目下的font-family。可以通过编辑项目查看，默认是"iconfont"。</p>
         </blockquote>
     </div>
 

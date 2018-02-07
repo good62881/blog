@@ -4,9 +4,9 @@
 	<div class="nav">
 		<ul class="fix">
 			<li><a href="/">文章</a></li>
-			<li><a href="">实例</a></li>
+			<!-- <li><a href="">实例</a></li>
 			<li><a href="">照片</a></li>
-			<li><a href="">留言</a></li>
+			<li><a href="">留言</a></li> -->
 			<li><a href="">关于我</a></li>
 		</ul>
 	</div>
@@ -14,7 +14,7 @@
 </template>
 
 
-<style lang="less" rel="stylesheet/less"> 
+<style scoped lang="less" rel="stylesheet/less"> 
 .top{background: url("../../public/images/bg.jpg") no-repeat center top; padding-top: 300px;}
 
 .nav{

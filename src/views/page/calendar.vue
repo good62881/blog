@@ -140,7 +140,7 @@ export default {
 }
 </script>
 
-<style lang="less" rel="stylesheet/less"> 
+<style scoped lang="less" rel="stylesheet/less"> 
 .calendar{
 	border: 1px solid #d8d6d6; position: relative; padding-bottom: 120%;
 	&_top{

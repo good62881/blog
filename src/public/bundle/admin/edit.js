@@ -22,40 +22,49 @@ var editInfo = Vue.extend({
 	template: '#editInfo',
 	data: function() {
 		return {
+			editTab: false,
 			onEdit: false,
-			editForm:''
+			editForm:{
+				name:'',
+				age:0,
+				job:'',
+				email:''
+			}
 		};
 	},
 	methods: {
 		isEdit: function() {
-			this.editForm = JSON.parse(JSON.stringify(this.info));
-			this.onEdit = true;
+			this.editForm = JSON.parse(JSON.stringify(this.info,['name','age','job','email']));
+			this.editTab = true;
 		},
 		tabEdit: function() {
-			this.onEdit = false;
+			this.editTab = false;
 			this.$refs['editForm'].resetFields();
 		},
-		// submitForm: function() {
-		// 	var that = this;
-		// 	that.$refs['editForm'].validate(function(valid) {
-		// 		if (valid) {
-		// 			that.$http.post('/edit/editInfo', that.editForm).then(function(res) {
-		// 				if (!res.body.code) {
-		// 					that.$message.error(res.body.msg)
-		// 				} else {
-		// 					that.$message({
-		// 						message: res.body.msg,
-		// 						type: 'success',
-		// 						duration: 1000,
-		// 						onClose: function() {
-		// 							location.reload()
-		// 						}
-		// 					});
-		// 				}
-		// 			});
-		// 		}
-		// 	});
-		// }
+		submitForm: function() {
+			var that = this;
+			that.onEdit=true;
+			that.$refs['editForm'].validate(function(valid) {
+				if (valid) {
+					$.post("/adminApi/editInfo",that.editForm,function(res){
+						if (!res.code) {
+							that.$message({
+								message: '修改成功！',
+								type: 'success',
+								duration: 2000,
+								onClose: function() {
+									app.$refs.CTop.getInfo();
+									that.tabEdit();
+								}
+							});
+						} else {
+							that.onEdit=false;
+							that.$message.error(res.msg);
+						}
+					});
+				}
+			});
+		}
 	}
 });
 
@@ -67,27 +76,19 @@ var editPass = Vue.extend({
 	data: function() {
 		var that = this;
 		return {
+			onEdit: false,
 			editPass: {
 				pass: "",
 				newPass: "",
 				checkPass: ""
 			},
 			rules: {
-				pass: [{
-					required: true,
-					message: '请输入密码',
-				}, {
-					max: 20,
-					message: '密码不超过 20 个字符',
-				}],
 				newPass: [{
 					validator: function(rule, value, callback) {
 						if (value === '') {
 							callback(new Error('请输入密码'));
-						} else if (value.length > 20) {
-							callback(new Error('密码不能超过20位字符'));
-						} else if (value == that.editPass.pass) {
-							callback(new Error('不能与原密码一样'));
+						} else if (!(/^[A-Za-z0-9]{6,32}$/.test(value))) {
+							callback(new Error('请输入6-32位数字或字母'));
 						} else {
 							if (that.editPass.checkPass !== '') {
 								that.$refs.editPass.validateField('checkPass');
@@ -113,22 +114,24 @@ var editPass = Vue.extend({
 		};
 	},
 	methods: {
-		submitForm: function(formName) {
+		submitForm: function() {
 			var that = this;
-			that.$refs[formName].validate(function(valid) {
+			that.onEdit=true;
+			that.$refs['editPass'].validate(function(valid) {
 				if (valid) {
-					that.$http.post('/edit/editPass', that.editPass).then(function(res) {
-						if (!res.body.code) {
-							that.$message.error(res.body.msg)
-						} else {
+					$.post("/adminApi/editPass",that.editPass,function(res){
+						if (!res.code) {
 							that.$message({
-								message: res.body.msg,
+								message: '修改成功,请用新密码重新登录！',
 								type: 'success',
 								duration: 2000,
 								onClose: function() {
-									location = '/out'
+									location='/admin/out'
 								}
 							});
+						} else {
+							that.onEdit=false;
+							that.$message.error(res.msg);
 						}
 					});
 				}
@@ -144,17 +147,14 @@ var app = new Vue({
 	el: "#app",
 	data: {
 		userInfo:'',
-		navNow:'editInfo',
-		tit: '基本资料',
-		imgDialog: false,
 	},
 	components: {
 		CNav: CNav,
 		CTop: CTop
 	},
-	computed: {
-		tab: function() {
-			return this.$route.name
+	computed:{
+		navNow:function() {
+			return {tab:this.$route.name,tit:this.$route.name=='editInfo'?'基本资料':'修改密码'};
 		}
 	},
 	created: function() {
@@ -162,57 +162,29 @@ var app = new Vue({
 	},
 	methods: {
 		tabTit: function(tab) {
-			this.tit = tab._props.label;
-			location = '/edit#/' + tab._props.name;
+			this.navNow.tab= tab;
 		},
-		beforeAvatarUpload: function(file) {
-			const isJPG = file.type === 'image/jpeg';
-			const isLt2M = file.size / 1024 < 100;
-
-			if (!isJPG) {
-				this.$message.error('上传头像图片只能是 JPG 格式!');
-			}
-			if (!isLt2M) {
-				this.$message.error('上传头像图片大小不能超过 100K!');
-			}
-			return isJPG && isLt2M;
-		},
-		handleAvatarSuccess: function(res) {
+		avatarUpload:function(res) {
 			if (!res.code) {
-				this.$message.error(res.msg)
+				this.$refs.CTop.getInfo();
+				this.$message.success('上传成功！');
 			} else {
-				this.imgDialog = false;
-				this.$message({
-					message: '上传成功！',
-					type: 'success',
-					duration: 1000,
-					onClose: function() {
-						location.reload()
-					}
-				});
+				this.$message.error(res.msg);
 			}
 		}
 	},
 	router: new VueRouter({
 		routes: [{
-			path: '/',
-			name: 'editInfo',
+			path: '/editInfo',
+			name:'editInfo',
 			component: editInfo,
-			beforeEnter: function(to, from, next) {
-				document.title = '基本资料';
-				next();
-			}
 		}, {
 			path: '/editPass',
-			name: 'editPass',
+			name:'editPass',
 			component: editPass,
-			beforeEnter: function(to, from, next) {
-				document.title = '修改密码';
-				next();
-			}
 		}, {
 			path: '*',
-			redirect: '/'
+			redirect: '/editInfo'
 		}]
 	})
 });

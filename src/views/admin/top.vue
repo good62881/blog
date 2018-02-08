@@ -26,19 +26,21 @@ export default {
 		}
 	},
 	created: function() {
-		var that=this;
-		//获取用户信息
-		$.post("/adminApi/getInfo",function(res){
-			if (res.code != 0) {
-				that.$message.error(res.message);
-			} else {
-				that.info = res.data;
-				that.$emit('update:userInfo', res.data)
-			}
-		});
+		this.getInfo();
 	},
 	methods: {
-		
+		//获取用户信息
+		getInfo:function() {
+			var that=this;
+			$.post("/adminApi/getInfo",function(res){
+				if (res.code != 0) {
+					that.$message.error(res.message);
+				} else {
+					that.info = res.data;
+					that.$emit('update:userInfo', res.data)
+				}
+			});
+		}
 	}
 }
 </script>

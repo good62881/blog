@@ -37,7 +37,7 @@ app.get('/admin/index',function(req,res){
 });
 //获取个人信息
 app.post('/adminApi/getInfo',function(req,res){
-	res.send({code:0,data:req.session.user,msg:''});
+	res.send({code:0,data:JSON.parse(JSON.stringify(req.session.user,['name','age','job','email','avatar'])),msg:''});
 });
 
 //退出登录
@@ -51,6 +51,9 @@ app.get('/admin/out',function(req, res){
 app.get('/admin/edit',function(req,res){
 	res.render('admin/edit');
 });
+app.post('/adminApi/editInfo',user.editInfo);
+app.post('/adminApi/editPass',user.editPass);
+app.post('/adminApi/avatarUpload',user.avatarUpload);
 
 
 }

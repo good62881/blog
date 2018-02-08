@@ -2,41 +2,32 @@
 <html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
-	<title>首页</title>
+	<title>账户设置</title>
 </head>
 <body>
 
 <div id="app" v-cloak>
-	<c-top :user-info.sync="userInfo"></c-top>
+	<c-top ref="CTop" :user-info.sync="userInfo"></c-top>
 
 	<el-row class="oh">
-		<c-nav :now="navNow"></c-nav>
+		<c-nav :now.sync="navNow.tab"></c-nav>
 		<el-col :span="20" class="main edit">
-			<h2>{{tit}}</h2>
-			<el-tabs v-model="tab" @tab-click="tabTit">
-				<el-tab-pane label="基本资料" name="editInfo"></el-tab-pane>
-				<el-tab-pane label="修改密码" name="editPass"></el-tab-pane>
-			</el-tabs>
+			<h2>{{navNow.tit}}</h2>
+			<el-menu :default-active="navNow.tab" mode="horizontal"  @select="tabTit" router>
+				<el-menu-item index="editInfo">基本资料</el-menu-item>
+				<el-menu-item index="editPass">修改密码</el-menu-item>
+			</el-menu>
 			<el-row>
 				<router-view :info='userInfo'></router-view>
 				<el-col :span="12" :offset="2">
 					<p><img class="edit_img" :src="userInfo.avatar" alt=""></p>
-					<el-button type="primary" icon="upload" @click="imgDialog=true">上传头像</el-button>
+					<el-upload :show-file-list="false" action="/adminApi/avatarUpload" :on-success="avatarUpload" accept="image/*">
+						<el-button type="primary">上传头像</el-button>
+					</el-upload>
 				</el-col>
 			</el-row>
 		</el-col>
 	</el-row>
-
-
-	<el-dialog title="上传头像" v-model="imgDialog" size="tiny">
-		<el-upload class="imgUpload" drag :before-upload="beforeAvatarUpload" :on-success="handleAvatarSuccess" action="/edit/imgUpload">
-			<i class="el-icon-upload"></i>
-			<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-			<div class="el-upload__tip" slot="tip">只能上传jpg文件，且不超过100k。建议尺寸100*100</div>
-		</el-upload>
-	</el-dialog>
-
-
 
 </div>
 
@@ -46,7 +37,7 @@
 <!-- 基本资料编辑 -->
 <template id="editInfo">
 	<el-col :span="10">
-		<el-form v-if="!onEdit" label-width="90px">
+		<el-form v-show="!editTab" label-width="60px">
 			<el-form-item label="姓名">
 				<div>{{info.name}}</div>
 			</el-form-item>
@@ -63,29 +54,25 @@
 				<el-button type="primary" @click="isEdit">修改</el-button>
 			</el-form-item>
 		</el-form>
-		<el-form v-if="onEdit" ref="editForm" :model="editForm" label-width="90px">
+		<el-form v-show="editTab" ref="editForm" :model="editForm" label-width="80px">
 			<el-form-item label="姓名" prop="name" :rules="[{ required: true, message: '请输入姓名' },{ pattern: /^[\u4e00-\u9fa5]{2,5}$/, message: '请输入2~5个中文字符'}]">
 				<el-tooltip content="必填,2~5个中文字符" placement="right">
 					<el-input v-model="editForm.name"></el-input>
 				</el-tooltip>
 			</el-form-item>
 			<el-form-item label="年龄" prop="age">
-				<el-tooltip content="选填,为0显示保密" placement="right">
+				<el-tooltip content="为0显示保密" placement="right">
 					<el-input-number v-model="editForm.age" :min="0" size="small"></el-input-number>
 				</el-tooltip>
 			</el-form-item>
 			<el-form-item label="职业" prop="job" :rules="[{ required: true, message: '请输入职业' }]">
-				<el-tooltip content="必填" placement="right">
-					<el-input v-model="editForm.job"></el-input>
-				</el-tooltip>
+				<el-input v-model="editForm.job"></el-input>
 			</el-form-item>
-			<el-form-item label="email" prop="email" :rules="[{ required: true, message: '请输入email' },{ type: 'email', message: '请正确输入邮箱'}]">
-				<el-tooltip content="必填" placement="right">
-					<el-input v-model="editForm.email"></el-input>
-				</el-tooltip>
+			<el-form-item label="email" prop="email" :rules="[{ required: true, message: '请输入邮箱' },{ type: 'email', message: '请正确输入邮箱'}]">
+				<el-input v-model="editForm.email"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<!-- <el-button type="primary" @click="submitForm">确认</el-button> -->
+				<el-button type="primary" :disabled="onEdit" @click="submitForm">确认</el-button>
 				<el-button @click="tabEdit">返回</el-button>
 			</el-form-item>
 		</el-form>
@@ -95,31 +82,27 @@
 
 
 <!-- 密码修改 -->
-<!-- <template id="editPass">
+<template id="editPass">
 	<el-col :span="10">
-		<el-form ref="editPass" :model="editPass" :rules="rules" label-width="90px">
-			<el-form-item label="原密码" prop="pass">
+		<el-form ref="editPass" :model="editPass" :rules="rules" label-width="80px">
+			<el-form-item label="原密码" prop="pass" :rules="[{ required: true, message: '请输入原密码' }]">
 				<el-input type="password" v-model="editPass.pass"></el-input>
 			</el-form-item>
 			<el-form-item label="新密码" prop="newPass">
-				<el-popover trigger="focus" placement="right">
-					<div>必填<br/>长度不超过20个字符</div>
-					<el-input type="password" slot="reference" v-model="editPass.newPass"></el-input>
-				</el-popover>
+				<el-tooltip content="必填,6-32位数字或字母" placement="right">
+					<el-input type="password" v-model="editPass.newPass"></el-input>
+				</el-tooltip>
 			</el-form-item>
 			<el-form-item label="确认密码" prop="checkPass">
-				<el-popover trigger="focus" placement="right">
-					<div>必填<br/>再次输入密码</div>
-					<el-input type="password" slot="reference" v-model="editPass.checkPass"></el-input>
-				</el-popover>
+				<el-input type="password" v-model="editPass.checkPass"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" @click="submitForm('editPass')">确认</el-button>
+				<el-button type="primary" :disabled="onEdit" @click="submitForm">确认</el-button>
 			</el-form-item>
 		</el-form>
 	</el-col>
 </template>
- -->
+
 
 </body>
 </html>

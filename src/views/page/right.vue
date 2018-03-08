@@ -2,25 +2,25 @@
 <template>
 <div class="right">
 	<div class="right_avatar">
-		<img src="../../public/images/avatar.jpg" alt="">
+		<img :src="userInfo.avatar" alt="">
 	</div>
 	<div class="right_num">
 		<p>文章<br>245</p><p>照片<br>356</p><p>留言<br>6641</p>
 	</div>
 	<div class="right_search">
-		<el-input placeholder="请输入搜索内容" size="mini">
+		<!-- <el-input placeholder="请输入搜索内容" size="mini">
 			<el-select slot="prepend">
 				<el-option label="文章" value="1"></el-option>
 				<el-option label="实例" value="2"></el-option>
 			</el-select>
-		</el-input>
+		</el-input> -->
 	</div>
 	<dl class="right_me">
 		<dt><a href="#">更多</a>关于我</dt>
-		<dd>昵称：豆芽</dd>
-		<dd>年龄：保密</dd>
-		<dd>职业：码农</dd>
-		<dd>邮箱：good62881@163.com</dd>
+		<dd>昵称：{{userInfo.name}}</dd>
+		<dd>年龄：{{userInfo.age?userInfo.age:'保密'}}</dd>
+		<dd>职业：{{userInfo.job}}</dd>
+		<dd>邮箱：{{userInfo.email}}</dd>
 	</dl>
 	<c-calendar :dayData="{'2017/12/6':10,'2017/12/3':20}" :monthData="{'2017/12':120,'2017/2':20}" :yearData="{'2016':12,'2014':20}" @cbDate="cbDate"></c-calendar>
 	<dl class="right_list right_tag">
@@ -69,17 +69,21 @@ export default {
 	data: function () {
 		return {
 			userInfo:'',
-			showBox:false,
-			filterTxt:'',
-			msgCon:'',
-			msgList:[],
-			conversationList:[],
-			voiceUrl:'',
-			msgTxt:''
 		}
 	},
 	components: {
 		CCalendar: CCalendar
+	},
+	created: function() {
+		var that=this;
+		//获取个人信息
+		$.post("/Api/getInfo",function(res){
+			if (!res.code) {
+				that.userInfo=res.data
+			} else {
+				that.$message.error(res.msg);
+			}
+		});
 	},
 	methods: {
 		cbDate:function(d) {

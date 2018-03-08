@@ -1,6 +1,6 @@
 import '../../css/common.less';
 import '../../font/iconfont.css';
-import '../../css/admin/edit.less';
+import '../../css/admin/article.less';
 
 //vue相关
 import Vue from 'vue';
@@ -16,24 +16,69 @@ import CTop from '../../../views/admin/top.vue';
 import CNav from '../../../views/admin/nav.vue';
 
 
-//修改基本信息
-var editInfo = Vue.extend({
-	props: ['info'],
-	template: '#editInfo',
+//文章列表
+var articleList = Vue.extend({
+	template: '#articleList',
 	data: function() {
 		return {
-			editTab: false,
-			editForm:{
-				name:'',
-				age:0,
-				job:'',
-				email:''
-			}
+			tit: '文章管理',
+			pageNo: 1,
+			pageSize: 20,
+			searchForm: {
+				date: '',
+				status: 0,
+				type: 'tit',
+				val: '',
+				sort:1
+			},
+			tableData: [{
+				date: '2016-05-03',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-02',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-04',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-01',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-08',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-06',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}, {
+				date: '2016-05-07',
+				tit: '王小虎',
+				tag: '上海市普陀区金沙江路 1518 弄',
+				PV:1,
+				status:1
+			}],
 		};
 	},
 	methods: {
 		isEdit: function() {
-			this.editForm = JSON.parse(JSON.stringify(this.info,['name','age','job','email']));
+			this.editForm = JSON.parse(JSON.stringify(this.info, ['name', 'age', 'job', 'email']));
 			this.editTab = true;
 		},
 		tabEdit: function() {
@@ -44,7 +89,7 @@ var editInfo = Vue.extend({
 			var that = this;
 			that.$refs['editForm'].validate(function(valid) {
 				if (valid) {
-					$.post("/adminApi/editInfo",that.editForm,function(res){
+					$.post("/adminApi/editInfo", that.editForm, function(res) {
 						if (!res.code) {
 							app.$refs.CTop.getInfo();
 							that.tabEdit();
@@ -62,8 +107,8 @@ var editInfo = Vue.extend({
 
 
 //修改密码
-var editPass = Vue.extend({
-	template: '#editPass',
+var articleEdit = Vue.extend({
+	template: '#articleEdit',
 	data: function() {
 		var that = this;
 		return {
@@ -107,21 +152,21 @@ var editPass = Vue.extend({
 	methods: {
 		submitForm: function() {
 			var that = this;
-			that.onEdit=true;
+			that.onEdit = true;
 			that.$refs['editPass'].validate(function(valid) {
 				if (valid) {
-					$.post("/adminApi/editPass",that.editPass,function(res){
+					$.post("/adminApi/editPass", that.editPass, function(res) {
 						if (!res.code) {
 							that.$message({
 								message: '修改成功,请用新密码重新登录！',
 								type: 'success',
 								duration: 2000,
 								onClose: function() {
-									location='/admin/out'
+									location = '/admin/out'
 								}
 							});
 						} else {
-							that.onEdit=false;
+							that.onEdit = false;
 							that.$message.error(res.msg);
 						}
 					});
@@ -137,25 +182,18 @@ var editPass = Vue.extend({
 var app = new Vue({
 	el: "#app",
 	data: {
-		userInfo:'',
+		userInfo: '',
+		navNow: 'article',
 	},
 	components: {
 		CNav: CNav,
 		CTop: CTop
 	},
-	computed:{
-		navNow:function() {
-			return {tab:this.$route.name,tit:this.$route.name=='editInfo'?'基本资料':'修改密码'};
-		}
-	},
 	created: function() {
-		
+
 	},
 	methods: {
-		tabTit: function(tab) {
-			this.navNow.tab= tab;
-		},
-		avatarUpload:function(res) {
+		avatarUpload: function(res) {
 			if (!res.code) {
 				this.$refs.CTop.getInfo();
 				this.$message.success('上传成功！');
@@ -166,17 +204,16 @@ var app = new Vue({
 	},
 	router: new VueRouter({
 		routes: [{
-			path: '/editInfo',
-			name:'editInfo',
-			component: editInfo,
+			path: '/articleList',
+			name: 'articleList',
+			component: articleList,
 		}, {
-			path: '/editPass',
-			name:'editPass',
-			component: editPass,
+			path: '/articleEdit',
+			name: 'articleEdit',
+			component: articleEdit,
 		}, {
 			path: '*',
-			redirect: '/editInfo'
+			redirect: '/articleList'
 		}]
 	})
 });
-

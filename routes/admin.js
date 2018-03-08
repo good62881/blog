@@ -56,4 +56,26 @@ app.post('/adminApi/editPass',user.editPass);
 app.post('/adminApi/avatarUpload',user.avatarUpload);
 
 
+
+
+
+// ----------文章管理
+app.get('/admin/article',function(req,res){
+	res.render('admin/article');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

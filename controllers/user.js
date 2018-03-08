@@ -12,28 +12,27 @@ function hashPW(pwd) { //单向加密
 //登录逻辑
 exports.login = function(req, res) {
 	User.findOne({
-			account: req.body.account
-		})
-		.exec(function(err, user) {
-			var cb = {
-				code: 1,
-				msg: ""
+		account: req.body.account
+	}, function(err, user) {
+		var cb = {
+			code: 1,
+			msg: ""
+		};
+		if (user && user.pass === hashPW(req.body.pass)) {
+			req.session.user = {
+				account: user.account,
+				name: user.name,
+				age: user.age,
+				job: user.job,
+				email: user.email,
+				avatar: user.avatar,
 			};
-			if (user && user.pass === hashPW(req.body.pass)) {
-				req.session.user = {
-					account: user.account,
-					name: user.name,
-					age: user.age,
-					job: user.job,
-					email: user.email,
-					avatar: user.avatar,
-				};
-				cb.code = 0;
-			} else {
-				cb.msg = '账号或密码错误！';
-			};
-			res.send(cb);
-		});
+			cb.code = 0;
+		} else {
+			cb.msg = '账号或密码错误！';
+		};
+		res.send(cb);
+	})
 };
 
 
@@ -58,32 +57,6 @@ exports.login = function(req, res) {
 // };
 
 
-
-// //获取用户信息
-// exports.getInfo=function(req,res){
-// 	var cb={code:0,data:"",msg:""};
-// 	if(req.session.user){
-// 		User.aggregate([
-// 			{$match:{_id:new mongoose.Types.ObjectId(req.session.user)}},  //_id自动生成是是ObjectId对象，查询时也需要把字段转换成ObjectId对象
-// 			{$project:{_id:0,pass:0,date:0}}
-// 		],function(err,data){ 
-// 			if (err) {
-// 				cb.msg="获取用户信息出错！";
-// 				res.send(cb);
-// 			}else{
-// 				cb.code=1;
-// 				cb.data=data[0];
-// 				res.send(cb);
-// 			}
-// 		});
-// 	}else{
-// 		cb.msg="登录超时！";
-// 		res.send(cb);
-// 	}
-// };
-
-
-
 //更新用户信息
 exports.editInfo = function(req, res) {
 	var _info = {
@@ -95,29 +68,28 @@ exports.editInfo = function(req, res) {
 		email: req.body.email,
 	};
 	User.findOneAndUpdate({
-			account: _info.account
-		}, {
-			$set: {
-				name: _info.name,
-				age: _info.age,
-				job: _info.job,
-				email: _info.email,
-			}
-		},
-		function(err, data) {
-			var cb = {
-				code: 1,
-				msg: ""
-			};
-			if (err) {
-				cb.msg = "修改失败！";
-				res.send(cb);
-				return
-			};
-			req.session.user = _info;
-			cb.code = 0;
+		account: _info.account
+	}, {
+		$set: {
+			name: _info.name,
+			age: _info.age,
+			job: _info.job,
+			email: _info.email,
+		}
+	}, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ""
+		};
+		if (err) {
+			cb.msg = "修改失败！";
 			res.send(cb);
-		});
+			return
+		};
+		req.session.user = _info;
+		cb.code = 0;
+		res.send(cb);
+	});
 };
 
 
@@ -125,44 +97,43 @@ exports.editInfo = function(req, res) {
 //修改密码
 exports.editPass = function(req, res) {
 	User.findOne({
-			$and: [{
-				account: req.session.user.account
-			}, {
-				pass: hashPW(req.body.pass)
-			}]
-		},
-		function(err, data) {
-			var cb = {
-				code: 1,
-				msg: ""
-			};
-			if (err) {
-				cb.msg = "修改失败！";
+		$and: [{
+			account: req.session.user.account
+		}, {
+			pass: hashPW(req.body.pass)
+		}]
+	}, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ""
+		};
+		if (err) {
+			cb.msg = "修改失败！";
+			res.send(cb);
+		} else if (data) {
+			if (hashPW(req.body.newPass) == data.pass) {
+				cb.msg = "新密码不能与原密码相同！";
 				res.send(cb);
-			} else if (data) {
-				if (hashPW(req.body.newPass) == data.pass) {
-					cb.msg = "新密码不能与原密码相同！";
+				return
+			};
+			data.update({
+				$set: {
+					pass: hashPW(req.body.newPass)
+				}
+			}, function(err, data) {
+				if (err) {
+					cb.msg = "修改失败！";
 					res.send(cb);
 					return
 				};
-				data.update({
-					$set: {
-						pass: hashPW(req.body.newPass)
-					}
-				}, function(err, data) {
-					if (err) {
-						cb.msg = "修改失败！";
-						res.send(cb);
-						return
-					};
-					cb.code = 0;
-					res.send(cb);
-				})
-			} else {
-				cb.msg = "原密码错误！";
+				cb.code = 0;
 				res.send(cb);
-			}
-		});
+			})
+		} else {
+			cb.msg = "原密码错误！";
+			res.send(cb);
+		}
+	});
 };
 
 
@@ -175,7 +146,7 @@ var multerConfig = {
 		destination: 'out/public/images', //可以直接配置地址，如果地址不存在，会自动创建
 		filename: function(req, file, cb) {
 			var fileFormat = (file.originalname).split(".");
-			cb(null, 'avatar_'+req.session.user.account+'_'+Date.now()+'.' + fileFormat[fileFormat.length - 1]);
+			cb(null, 'avatar_' + req.session.user.account + '_' + Date.now() + '.' + fileFormat[fileFormat.length - 1]);
 		}
 	}),
 	limits: {
@@ -204,33 +175,32 @@ exports.avatarUpload = function(req, res) {
 			res.send(cb);
 			return
 		}
-		var _url='/images/' + req.file.filename;
+		var _url = '/images/' + req.file.filename;
 		User.findOneAndUpdate({
-				account: req.session.user.account
-			}, {
-				$set: {
-					avatar: _url
-				}
-			},
-			function(err, data) {
-				if (err) {
-					cb.msg = "上传失败！";
-					res.send(cb);
-					return
-				};
-
-				var _files = fs.readdirSync('out/public/images');
-				var _reg=new RegExp('^avatar_'+req.session.user.account); 
-				for (var i = _files.length - 1; i >= 0; i--) {
-					if (_reg.test(_files[i]) && _files[i]!=req.file.filename) {
-						fs.unlinkSync('out/public/images/'+_files[i]);
-					}
-				}
-
-				req.session.user.avatar = _url; 
-				cb.code = 0;
+			account: req.session.user.account
+		}, {
+			$set: {
+				avatar: _url
+			}
+		}, function(err, data) {
+			if (err) {
+				cb.msg = "上传失败！";
 				res.send(cb);
-			});
+				return
+			};
+			//删除掉原头像文件
+			var _files = fs.readdirSync('out/public/images');
+			var _reg = new RegExp('^avatar_' + req.session.user.account);
+			for (var i = _files.length - 1; i >= 0; i--) {
+				if (_reg.test(_files[i]) && _files[i] != req.file.filename) {
+					fs.unlinkSync('out/public/images/' + _files[i]);
+				}
+			}
+
+			req.session.user.avatar = _url;
+			cb.code = 0;
+			res.send(cb);
+		});
 	})
 
 };

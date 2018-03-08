@@ -10,7 +10,7 @@
 				<p class="txthide"><small>管理员</small></p>
 			</dt>
 			<dd><a class="el-iconadd el-iconadd-tuichu" href="/admin/out"></a></dd>
-			<dd><a class="el-icon-setting" href="/edit#"></a></dd>
+			<dd><a class="el-icon-setting" href="/admin/edit#/editInfo"></a></dd>
 		</dl>
 	</el-col>
 </el-row>

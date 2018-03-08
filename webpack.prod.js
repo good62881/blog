@@ -8,7 +8,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var pageArr = [
 	'page/index','page/article','page/photo','page/msg',
-	'admin/login','admin/index','admin/edit',
+	'admin/login','admin/index','admin/edit','admin/article',
 ];
 var configEntry = {};
 pageArr.forEach((page) => {

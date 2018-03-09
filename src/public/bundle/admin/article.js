@@ -26,7 +26,8 @@ var articleList = Vue.extend({
 			pageSize: 20,
 			searchForm: {
 				date: '',
-				status: 0,
+				class: 0,
+				Visible: 0,
 				type: 'tit',
 				val: '',
 				sort:1
@@ -36,43 +37,43 @@ var articleList = Vue.extend({
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-02',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-04',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-01',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-08',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-06',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}, {
 				date: '2016-05-07',
 				tit: '王小虎',
 				tag: '上海市普陀区金沙江路 1518 弄',
 				PV:1,
-				status:1
+				class:1
 			}],
 		};
 	},
@@ -106,73 +107,48 @@ var articleList = Vue.extend({
 
 
 
-//修改密码
+//发布新文章
 var articleEdit = Vue.extend({
 	template: '#articleEdit',
 	data: function() {
 		var that = this;
 		return {
-			onEdit: false,
-			editPass: {
-				pass: "",
-				newPass: "",
-				checkPass: ""
+			tit: '发布文章',
+			tagVisible:false,
+			tagValue:'',
+			form: {
+				name: '',
+				class: '1',
+				tags:['html','vue'],
+				visible:true
 			},
-			rules: {
-				newPass: [{
-					validator: function(rule, value, callback) {
-						if (value === '') {
-							callback(new Error('请输入密码'));
-						} else if (!(/^[A-Za-z0-9]{6,32}$/.test(value))) {
-							callback(new Error('请输入6-32位数字或字母'));
-						} else {
-							if (that.editPass.checkPass !== '') {
-								that.$refs.editPass.validateField('checkPass');
-							}
-							callback();
-						}
-					},
-					required: true
-				}],
-				checkPass: [{
-					validator: function(rule, value, callback) {
-						if (value === '') {
-							callback(new Error('请再次输入密码'));
-						} else if (value !== that.editPass.newPass) {
-							callback(new Error('两次输入密码不一致!'));
-						} else {
-							callback();
-						}
-					},
-					required: true
-				}]
-			}
 		};
 	},
 	methods: {
-		submitForm: function() {
-			var that = this;
-			that.onEdit = true;
-			that.$refs['editPass'].validate(function(valid) {
-				if (valid) {
-					$.post("/adminApi/editPass", that.editPass, function(res) {
-						if (!res.code) {
-							that.$message({
-								message: '修改成功,请用新密码重新登录！',
-								type: 'success',
-								duration: 2000,
-								onClose: function() {
-									location = '/admin/out'
-								}
-							});
-						} else {
-							that.onEdit = false;
-							that.$message.error(res.msg);
-						}
-					});
-				}
+		// isEdit: function() {
+		// 	this.editForm = JSON.parse(JSON.stringify(this.info, ['name', 'age', 'job', 'email']));
+		// 	this.editTab = true;
+		// },
+		// tabEdit: function() {
+		// 	this.editTab = false;
+		// 	this.$refs['editForm'].resetFields();
+		// },
+		delTag: function(tag) {
+			this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+		},
+		addTag: function() {
+			if (this.tagValue) {
+				this.form.tags.push(this.tagValue);
+			}
+			this.tagVisible = false;
+			this.tagValue = '';
+		},
+		showTagInput: function() {
+			this.tagVisible = true;
+			this.$nextTick(function(){
+				this.$refs.saveTagInput.$refs.input.focus();
 			});
-		}
+		},
 	}
 });
 

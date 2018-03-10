@@ -59,10 +59,16 @@ app.post('/adminApi/avatarUpload',user.avatarUpload);
 
 
 
-// ----------文章管理
+// --------------文章表控制文件
+var article=require('../controllers/article');
+
+//文章管理
 app.get('/admin/article',function(req,res){
 	res.render('admin/article');
 });
+
+app.post('/adminApi/newArticle',article.newArticle);
+app.post('/adminApi/getArticleList',article.getArticleList);
 
 
 

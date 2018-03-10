@@ -2,13 +2,20 @@
 
 .article{
 	h2{ font-size:26px; color:#6dc3ea; font-weight:normal; margin-bottom:20px;}
-	.el-radio-group,.el-table{ margin-bottom: 10px;}
-	.el-tag{margin-right: 10px;}
-	.s_input{width: 500px;}
-	.tag_input{ width: 50px;}
 	&_ctr{
 		margin-bottom: 10px; padding-bottom:20px; border-bottom:solid 1px #e6e6e6;
 		.el-form-item{margin-bottom: 0;}
 		.el-select{ width:80px;}
+	}
+	&_list{
+		.el-radio-group,.el-table{ margin-bottom: 10px;}
+	}
+	&_edit{
+		.el-tag{margin-right: 10px;}
+		.el-select{ width:100px;}
+		.s_input{width: 500px;}
+		.tag_input{ width: 80px;}
+		.ql-container{ height: 300px;}
+		.el-button[disabled]{cursor: not-allowed; background: #7C7C7C; color: #fff;}
 	}
 }

@@ -146,7 +146,7 @@ var multerConfig = {
 		destination: 'out/public/images', //可以直接配置地址，如果地址不存在，会自动创建
 		filename: function(req, file, cb) {
 			var fileFormat = (file.originalname).split(".");
-			cb(null, 'avatar_' + req.session.user.account + '_' + Date.now() + '.' + fileFormat[fileFormat.length - 1]);
+			cb(null, 'avatar_' + Date.now() + '.' + fileFormat[fileFormat.length - 1]);
 		}
 	}),
 	limits: {
@@ -190,9 +190,9 @@ exports.avatarUpload = function(req, res) {
 			};
 			//删除掉原头像文件
 			var _files = fs.readdirSync('out/public/images');
-			var _reg = new RegExp('^avatar_' + req.session.user.account);
+			//var _reg = new RegExp('' + req.session.user.account);
 			for (var i = _files.length - 1; i >= 0; i--) {
-				if (_reg.test(_files[i]) && _files[i] != req.file.filename) {
+				if (/^avatar_/.test(_files[i]) && _files[i] != req.file.filename) {
 					fs.unlinkSync('out/public/images/' + _files[i]);
 				}
 			}

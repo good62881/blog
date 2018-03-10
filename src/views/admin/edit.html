@@ -42,7 +42,7 @@
 				<div>{{info.name}}</div>
 			</el-form-item>
 			<el-form-item label="年龄">
-				<div>{{info.age}}</div>
+				<div>{{info.age?info.age:'保密'}}</div>
 			</el-form-item>
 			<el-form-item label="职业">
 				<div>{{info.job}}</div>
@@ -65,7 +65,7 @@
 					<el-input-number v-model="editForm.age" :min="0" size="small"></el-input-number>
 				</el-tooltip>
 			</el-form-item>
-			<el-form-item label="职业" prop="job" :rules="[{ required: true, message: '请输入职业' }]">
+			<el-form-item label="职业" prop="job">
 				<el-input v-model="editForm.job"></el-input>
 			</el-form-item>
 			<el-form-item label="email" prop="email" :rules="[{ required: true, message: '请输入邮箱' },{ type: 'email', message: '请正确输入邮箱'}]">

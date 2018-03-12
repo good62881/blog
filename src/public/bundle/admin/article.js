@@ -20,7 +20,6 @@ Vue.use(VueQuillEditor)
 import CTop from '../../../views/admin/top.vue';
 import CNav from '../../../views/admin/nav.vue';
 
-
 //文章列表
 var articleList = Vue.extend({
 	template: '#articleList',
@@ -28,30 +27,118 @@ var articleList = Vue.extend({
 		return {
 			tit: '文章管理',
 			pageNo: 1,
-			pageSize: 20,
+			pageSize: 10,
+			loading:false,
 			searchForm: {
 				date: '',
 				class: '',
 				visible: true,
-				type: 'tit',
+				type: 'name',
 				val: '',
 				sort: 1
 			},
+			formCopy:'',
 			tableData: '',
 		};
 	},
 	created: function() {
-		var that = this;
-		$.post("/adminApi/getArticleList", that.searchForm, function(res) {
-			if (!res.code) {
-				that.tableData=res.data.list
-			} else {
-				that.$message.error(res.msg);
-			}
-		});
+		this.search();
+	},
+	filters:{
+		dateFilter:function(val) {
+			return (new Date(val)).toLocaleDateString()
+		}
 	},
 	methods: {
-		
+		//获取列表
+		getData:function(data) {
+			var that=this;
+			that.loading=true;
+			var _data={
+				date:data.date,
+				class:data.class,
+				visible:data.visible,
+				type:data.type,
+				val:data.val,
+				sort:data.sort,
+				pageNo:that.pageNo,
+				pageSize:that.pageSize,
+			};
+			$.post("/adminApi/getArticleList", _data, function(res) {
+				if (!res.code) {
+					that.tableData=res.data
+				} else {
+					that.$message.error(res.msg);
+				}
+				that.loading=false;
+			});
+		},
+		search:function() {
+			if (!this.loading) {
+				//保存搜索条件
+				this.formCopy=JSON.parse(JSON.stringify(this.searchForm));
+				if (this.pageNo==1) {
+					this.getData(this.searchForm);
+				}else{
+					this.pageNo=1;
+				}
+			}
+		},
+		goPage:function(i) {
+			this.pageNo=i;
+			this.getData(this.formCopy);
+		},
+		changeSize:function(i) {
+			this.pageSize=i;
+			if (this.pageNo==1) {
+				this.getData(this.formCopy);
+			}else{
+				this.pageNo=1;
+			}
+		},
+		sortSet:function(v) {
+			var that=this;
+			for(var p in that.sortDf){
+				if (p==v) {
+					that.sortDf[p]=!that.sortDf[p]
+				}else{
+					delete that.sortDf[p];
+					that.$set(that.sortDf, v, 1);
+				}
+			};
+			if (that.formCopy) {
+				that.formCopy.pageNo=1;
+				that.getData(that.formCopy);
+			}
+		},
+		//操作
+		editArticle:function(id) {
+			location='/admin/article#/articleEdit/'+id
+		},
+		toggleArticle:function(id) {
+			var that=this;
+			$.post("/adminApi/toggleArticle", {id:id}, function(res) {
+				if (!res.code) {
+					that.search();
+					that.$message.success('操作成功！');
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
+		delArticle:function(id) {
+			var that=this;
+			$.post("/adminApi/delArticle", {id:id}, function(res) {
+				if (!res.code) {
+					that.search();
+					that.$message.success('删除成功！');
+					document.body.click()
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
+
 	}
 });
 
@@ -112,6 +199,19 @@ var articleEdit = Vue.extend({
 			},
 		};
 	},
+	created: function() {
+		//是否编辑
+		var that = this;
+		if (that.$route.params.id) {
+			$.post("/adminApi/getArticle", {id:that.$route.params.id}, function(res) {
+				if (!res.code) {
+					that.form=res.data
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		}
+	},
 	methods: {
 		delTag: function(tag) {
 			this.form.tags.splice(this.form.tags.indexOf(tag), 1);
@@ -134,7 +234,8 @@ var articleEdit = Vue.extend({
 			that.$refs['form'].validate(function(valid) {
 				if (valid) {
 					that.isSubmit=true
-					$.post("/adminApi/newArticle", that.form, function(res) {
+					var _url=that.$route.params.id?'/adminApi/updateArticle':'/adminApi/newArticle';
+					$.post(_url, that.form, function(res) {
 						if (!res.code) {
 							that.$message({
 								message: '发布成功！',
@@ -151,7 +252,7 @@ var articleEdit = Vue.extend({
 					});
 				}
 			});
-		}
+		},
 	}
 });
 
@@ -183,6 +284,9 @@ var app = new Vue({
 			path: '/articleEdit',
 			name: 'articleEdit',
 			component: articleEdit,
+			children: [
+				{ path: ':id', component: articleEdit},
+			]
 		}, {
 			path: '*',
 			redirect: '/articleList'

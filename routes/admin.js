@@ -67,9 +67,8 @@ app.get('/admin/article',function(req,res){
 	res.render('admin/article');
 });
 
-app.post('/adminApi/newArticle',article.newArticle);
-app.post('/adminApi/getArticle',article.getArticle);
 app.post('/adminApi/updateArticle',article.updateArticle);
+app.post('/adminApi/getArticle',article.getArticle);
 app.post('/adminApi/toggleArticle',article.toggleArticle);
 app.post('/adminApi/delArticle',article.delArticle);
 app.post('/adminApi/getArticleList',article.getArticleList);

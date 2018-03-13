@@ -39,6 +39,7 @@ var articleList = Vue.extend({
 			},
 			formCopy:'',
 			tableData: '',
+			tableSelect:[]
 		};
 	},
 	created: function() {
@@ -111,13 +112,36 @@ var articleList = Vue.extend({
 				that.getData(that.formCopy);
 			}
 		},
+		//多选
+		selection:function(a) {
+			this.tableSelect=a;
+		},
+		//批量操作
+		selectionOpt:function(a) {
+			var that=this;
+			if (a==1) {
+				that.toggleArticle(that.tableSelect,!that.tableSelect[0].visible)
+			}else if(a==2){
+				that.$confirm('批量删除已选文章?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+					callback:function(action){
+						if (action=='confirm') {
+							that.delArticle(that.tableSelect)
+						}
+					}
+				});
+			}
+		},
 		//操作
 		editArticle:function(id) {
 			location='/admin/article#/articleEdit/'+id
 		},
-		toggleArticle:function(id) {
+		toggleArticle:function(id,visible) {
 			var that=this;
-			$.post("/adminApi/toggleArticle", {id:id}, function(res) {
+			var _id=(typeof id == 'string')?[id]:id.map(function(x){return x._id});
+			$.post("/adminApi/toggleArticle", {id:_id,visible:visible}, function(res) {
 				if (!res.code) {
 					that.search();
 					that.$message.success('操作成功！');
@@ -128,7 +152,8 @@ var articleList = Vue.extend({
 		},
 		delArticle:function(id) {
 			var that=this;
-			$.post("/adminApi/delArticle", {id:id}, function(res) {
+			var _id=(typeof id == 'string')?[id]:id.map(function(x){return x._id});
+			$.post("/adminApi/delArticle", {id:_id}, function(res) {
 				if (!res.code) {
 					that.search();
 					that.$message.success('删除成功！');
@@ -234,8 +259,7 @@ var articleEdit = Vue.extend({
 			that.$refs['form'].validate(function(valid) {
 				if (valid) {
 					that.isSubmit=true
-					var _url=that.$route.params.id?'/adminApi/updateArticle':'/adminApi/newArticle';
-					$.post(_url, that.form, function(res) {
+					$.post('/adminApi/updateArticle', that.form, function(res) {
 						if (!res.code) {
 							that.$message({
 								message: '发布成功！',

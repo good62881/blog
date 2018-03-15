@@ -47,14 +47,16 @@ app.get('/admin/out',function(req, res){
 	});
 });
 
-//账户设置
+
+
+
+// --------------账户设置
 app.get('/admin/edit',function(req,res){
 	res.render('admin/edit');
 });
 app.post('/adminApi/editInfo',user.editInfo);
 app.post('/adminApi/editPass',user.editPass);
 app.post('/adminApi/avatarUpload',user.avatarUpload);
-
 
 
 
@@ -66,14 +68,18 @@ var article=require('../controllers/article');
 app.get('/admin/article',function(req,res){
 	res.render('admin/article');
 });
-
+//文章操作
 app.post('/adminApi/updateArticle',article.updateArticle);
 app.post('/adminApi/getArticle',article.getArticle);
 app.post('/adminApi/toggleArticle',article.toggleArticle);
 app.post('/adminApi/delArticle',article.delArticle);
 app.post('/adminApi/getArticleList',article.getArticleList);
 
+//文章图片上传
+app.post('/adminApi/articleImgUpload',article.articleImgUpload);
 
+//文章统计
+app.post('/adminApi/getArticleNum',article.getArticleNum);
 
 
 

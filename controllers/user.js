@@ -150,7 +150,7 @@ var multerConfig = {
 		}
 	}),
 	limits: {
-		fileSize: 100 * 1024,
+		fileSize: 100 * 1024,  //单位是字节，这里限制了100kb
 		files: 1
 	},
 	fileFilter: function(req, file, cb) {

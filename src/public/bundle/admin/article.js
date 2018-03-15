@@ -7,10 +7,15 @@ import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router';
+
+//富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/monokai-sublime.css'
+
 
 Vue.use(ElementUI);
 Vue.use(VueRouter)
@@ -28,7 +33,7 @@ var articleList = Vue.extend({
 			tit: '文章管理',
 			pageNo: 1,
 			pageSize: 10,
-			loading:false,
+			loading: false,
 			searchForm: {
 				date: '',
 				class: '',
@@ -37,97 +42,97 @@ var articleList = Vue.extend({
 				val: '',
 				sort: 1
 			},
-			formCopy:'',
+			formCopy: '',
 			tableData: '',
-			tableSelect:[]
+			tableSelect: []
 		};
 	},
 	created: function() {
 		this.search();
 	},
-	filters:{
-		dateFilter:function(val) {
+	filters: {
+		dateFilter: function(val) {
 			return (new Date(val)).toLocaleDateString()
 		}
 	},
 	methods: {
 		//获取列表
-		getData:function(data) {
-			var that=this;
-			that.loading=true;
-			var _data={
-				date:data.date,
-				class:data.class,
-				visible:data.visible,
-				type:data.type,
-				val:data.val,
-				sort:data.sort,
-				pageNo:that.pageNo,
-				pageSize:that.pageSize,
+		getData: function(data) {
+			var that = this;
+			that.loading = true;
+			var _data = {
+				date: data.date,
+				class: data.class,
+				visible: data.visible,
+				type: data.type,
+				val: data.val,
+				sort: data.sort,
+				pageNo: that.pageNo,
+				pageSize: that.pageSize,
 			};
 			$.post("/adminApi/getArticleList", _data, function(res) {
 				if (!res.code) {
-					that.tableData=res.data
+					that.tableData = res.data
 				} else {
 					that.$message.error(res.msg);
 				}
-				that.loading=false;
+				that.loading = false;
 			});
 		},
-		search:function() {
+		search: function() {
 			if (!this.loading) {
 				//保存搜索条件
-				this.formCopy=JSON.parse(JSON.stringify(this.searchForm));
-				if (this.pageNo==1) {
+				this.formCopy = JSON.parse(JSON.stringify(this.searchForm));
+				if (this.pageNo == 1) {
 					this.getData(this.searchForm);
-				}else{
-					this.pageNo=1;
+				} else {
+					this.pageNo = 1;
 				}
 			}
 		},
-		goPage:function(i) {
-			this.pageNo=i;
+		goPage: function(i) {
+			this.pageNo = i;
 			this.getData(this.formCopy);
 		},
-		changeSize:function(i) {
-			this.pageSize=i;
-			if (this.pageNo==1) {
+		changeSize: function(i) {
+			this.pageSize = i;
+			if (this.pageNo == 1) {
 				this.getData(this.formCopy);
-			}else{
-				this.pageNo=1;
+			} else {
+				this.pageNo = 1;
 			}
 		},
-		sortSet:function(v) {
-			var that=this;
-			for(var p in that.sortDf){
-				if (p==v) {
-					that.sortDf[p]=!that.sortDf[p]
-				}else{
+		sortSet: function(v) {
+			var that = this;
+			for (var p in that.sortDf) {
+				if (p == v) {
+					that.sortDf[p] = !that.sortDf[p]
+				} else {
 					delete that.sortDf[p];
 					that.$set(that.sortDf, v, 1);
 				}
 			};
 			if (that.formCopy) {
-				that.formCopy.pageNo=1;
+				that.formCopy.pageNo = 1;
 				that.getData(that.formCopy);
 			}
 		},
 		//多选
-		selection:function(a) {
-			this.tableSelect=a;
+		selection: function(a) {
+			this.tableSelect = a;
 		},
 		//批量操作
-		selectionOpt:function(a) {
-			var that=this;
-			if (a==1) {
-				that.toggleArticle(that.tableSelect,!that.tableSelect[0].visible)
-			}else if(a==2){
+		selectionOpt: function(a) {
+			var that = this;
+			if (a == 1) {
+				that.toggleArticle(that.tableSelect, !that.tableSelect[0].visible)
+			} else if (a == 2) {
 				that.$confirm('批量删除已选文章?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning',
-					callback:function(action){
-						if (action=='confirm') {
+					callback: function(action) {
+						if (action == 'confirm') {
 							that.delArticle(that.tableSelect)
 						}
 					}
@@ -135,13 +140,18 @@ var articleList = Vue.extend({
 			}
 		},
 		//操作
-		editArticle:function(id) {
-			location='/admin/article#/articleEdit/'+id
+		editArticle: function(id) {
+			location = '/admin/article#/articleEdit/' + id
 		},
-		toggleArticle:function(id,visible) {
-			var that=this;
-			var _id=(typeof id == 'string')?[id]:id.map(function(x){return x._id});
-			$.post("/adminApi/toggleArticle", {id:_id,visible:visible}, function(res) {
+		toggleArticle: function(id, visible) {
+			var that = this;
+			var _id = (typeof id == 'string') ? [id] : id.map(function(x) {
+				return x._id
+			});
+			$.post("/adminApi/toggleArticle", {
+				id: _id,
+				visible: visible
+			}, function(res) {
 				if (!res.code) {
 					that.search();
 					that.$message.success('操作成功！');
@@ -150,10 +160,14 @@ var articleList = Vue.extend({
 				}
 			});
 		},
-		delArticle:function(id) {
-			var that=this;
-			var _id=(typeof id == 'string')?[id]:id.map(function(x){return x._id});
-			$.post("/adminApi/delArticle", {id:_id}, function(res) {
+		delArticle: function(id) {
+			var that = this;
+			var _id = (typeof id == 'string') ? [id] : id.map(function(x) {
+				return x._id
+			});
+			$.post("/adminApi/delArticle", {
+				id: _id
+			}, function(res) {
 				if (!res.code) {
 					that.search();
 					that.$message.success('删除成功！');
@@ -170,49 +184,69 @@ var articleList = Vue.extend({
 
 
 //发布新文章
+
 var articleEdit = Vue.extend({
 	template: '#articleEdit',
 	data: function() {
+		var that = this;
 		return {
 			tit: '发布文章',
 			tagVisible: false,
 			tagValue: '',
-			isSubmit:false,
+			uploadVisible: false,
+			isSubmit: false,
 			editorOption: {
 				placeholder: '请输入内容……',
 				modules: {
-					toolbar: [
-						['bold', 'italic', 'underline', 'strike','blockquote', 'code-block'],
-						[{
-							'header': 1
-						}, {
-							'header': 2
-						}],
-						[{
-							'list': 'ordered'
-						}, {
-							'list': 'bullet'
-						}],
-						[{
-							'script': 'sub'
-						}, {
-							'script': 'super'
-						}],
-						[{
-							'indent': '-1'
-						}, {
-							'indent': '+1'
-						}],
-						[{
-							'align': []
-						}],
-						[{
-							'color': []
-						}, {
-							'background': []
-						}],
-						['link','image','clean']
-					]
+					syntax: {
+						highlight(text) {
+							const result = hljs.highlightAuto(text)
+							return result.value
+						}
+					},
+					toolbar: {
+						container: [
+							['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+							[{
+								'header': 1
+							}, {
+								'header': 2
+							}],
+							[{
+								'list': 'ordered'
+							}, {
+								'list': 'bullet'
+							}],
+							[{
+								'script': 'sub'
+							}, {
+								'script': 'super'
+							}],
+							[{
+								'indent': '-1'
+							}, {
+								'indent': '+1'
+							}],
+							[{
+								'align': []
+							}],
+							[{
+								'color': []
+							}, {
+								'background': []
+							}],
+							['link', 'image', 'clean']
+						], // 工具栏
+						handlers: {
+							'image': function(value) {
+								if (value) {
+									that.uploadVisible = true;
+								} else {
+									this.quill.format('image', false);
+								}
+							}
+						}
+					}
 				}
 			},
 			form: {
@@ -228,9 +262,11 @@ var articleEdit = Vue.extend({
 		//是否编辑
 		var that = this;
 		if (that.$route.params.id) {
-			$.post("/adminApi/getArticle", {id:that.$route.params.id}, function(res) {
+			$.post("/adminApi/getArticle", {
+				id: that.$route.params.id
+			}, function(res) {
 				if (!res.code) {
-					that.form=res.data
+					that.form = res.data
 				} else {
 					that.$message.error(res.msg);
 				}
@@ -254,11 +290,25 @@ var articleEdit = Vue.extend({
 				this.$refs.saveTagInput.$refs.input.focus();
 			});
 		},
+		articleImgUpload: function(res) {
+			if (!res.code) {
+				this.$message.success('上传成功！');
+			} else {
+				this.$message.error(res.msg);
+			}
+		},
+		onEditorChange: function({
+			quill,
+			html,
+			text
+		}) {
+			console.log('editor change!', quill, html, text)
+		},
 		submitForm: function() {
 			var that = this;
 			that.$refs['form'].validate(function(valid) {
 				if (valid) {
-					that.isSubmit=true
+					that.isSubmit = true
 					$.post('/adminApi/updateArticle', that.form, function(res) {
 						if (!res.code) {
 							that.$message({
@@ -266,11 +316,11 @@ var articleEdit = Vue.extend({
 								type: 'success',
 								duration: 2000,
 								onClose: function() {
-									location='/admin/article#/articleList'
+									location = '/admin/article#/articleList'
 								}
 							});
 						} else {
-							that.isSubmit=false;
+							that.isSubmit = false;
 							that.$message.error(res.msg);
 						}
 					});
@@ -308,9 +358,10 @@ var app = new Vue({
 			path: '/articleEdit',
 			name: 'articleEdit',
 			component: articleEdit,
-			children: [
-				{ path: ':id', component: articleEdit},
-			]
+			children: [{
+				path: ':id',
+				component: articleEdit
+			}, ]
 		}, {
 			path: '*',
 			redirect: '/articleList'

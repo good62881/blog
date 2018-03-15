@@ -21,9 +21,13 @@
 				<router-view :info='userInfo'></router-view>
 				<el-col :span="12" :offset="2">
 					<p><img class="edit_img" :src="userInfo.avatar" alt=""></p>
+					
 					<el-upload :show-file-list="false" action="/adminApi/avatarUpload" :on-success="avatarUpload" accept="image/*">
-						<el-button type="primary">上传头像</el-button>
+						<el-tooltip content="建议尺寸200*200，限制大小100kb。">
+							<el-button type="primary">上传头像</el-button>
+						</el-tooltip>
 					</el-upload>
+					
 				</el-col>
 			</el-row>
 		</el-col>

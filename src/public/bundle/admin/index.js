@@ -18,9 +18,24 @@ var app=new Vue({
 	data:{
 		userInfo:'',
 		navNow:'index',
+		num:{
+			articleNum:0,
+			codeNum:0
+		}
 	},
 	components: {
 		CNav: CNav,
 		CTop: CTop
+	},
+	created: function() {
+		//文章统计
+		var that=this;
+		$.post("/adminApi/getArticleNum", function(res) {
+			if (!res.code) {
+				that.num=res.data
+			} else {
+				that.$message.error(res.msg);
+			}
+		});
 	},
 });

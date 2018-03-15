@@ -17,9 +17,7 @@
 </div>
 
 
-
-
-<!-- 基本资料编辑 -->
+<!-- 文章列表 -->
 <template id="articleList">
 	<el-col :span="20" class="main article">
 		<h2>{{tit}}</h2>
@@ -132,13 +130,23 @@
 				<el-switch v-model="form.visible"></el-switch>
 			</el-form-item>
 			<el-form-item label="内容" prop="content" :rules="[{ required: true, message: '请输入内容' }]">
-				<quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
+				<quill-editor ref="myTextEditor" v-model="form.content" @change="onEditorChange($event)" :options="editorOption"></quill-editor>
 			</el-form-item>
 			<el-form-item>
 				<el-button size="medium" type="primary" :disabled="isSubmit"  @click="submitForm">{{$route.params.id?'修改':'提交'}}</el-button>
 			</el-form-item>
 		</el-form>
+
+
+
 		
+		<el-dialog :visible.sync="uploadVisible" width="400px">
+			<el-upload accept="image/*" drag :on-success="articleImgUpload" action="/adminApi/articleImgUpload">
+				<i class="el-icon-upload"></i>
+				<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+				<div class="el-upload__tip" slot="tip">文件大小不超过1MB</div>
+			</el-upload>
+		</el-dialog>
 	</el-col>
 </template>
 

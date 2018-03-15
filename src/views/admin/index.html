@@ -15,7 +15,7 @@
 			<div class="info">
 				<img :src="userInfo.avatar" alt="">
 				<h1>{{userInfo.name}}</h1>
-				<p>共有0篇[<a href="/admin/article#/articleList">文章</a>]</p>
+				<p>共有{{num.articleNum}}篇[<a href="/admin/article#/articleList">文章</a>]、{{num.codeNum}}篇[<a href="/admin/article#/articleList">代码</a>]</p>
 			</div>
 		</el-col>
 	</el-row>

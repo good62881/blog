@@ -292,17 +292,19 @@ var articleEdit = Vue.extend({
 		},
 		articleImgUpload: function(res) {
 			if (!res.code) {
-				this.$message.success('上传成功！');
+				//插入图片
+				var _quill = this.$refs.myTextEditor.quill;
+				_quill.focus();  //非常重要！一定先让编辑框获得焦点，否则获取不到getSelection()光标位置
+				var _length = _quill.getSelection().index;
+				_quill.insertEmbed(_length, 'image', res.url);
+				_quill.setSelection(_length + 1);
+
+				this.$refs.upload.clearFiles();
+				this.uploadVisible = false;
 			} else {
 				this.$message.error(res.msg);
+				this.$refs.upload.abort();
 			}
-		},
-		onEditorChange: function({
-			quill,
-			html,
-			text
-		}) {
-			console.log('editor change!', quill, html, text)
 		},
 		submitForm: function() {
 			var that = this;

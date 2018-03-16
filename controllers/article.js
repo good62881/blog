@@ -1,11 +1,29 @@
 var mongoose = require('mongoose');
 require('../models/article_schema.js');
 var Article = mongoose.model('article');
+require('../models/picture_schema.js');
+var Picture = mongoose.model('picture');
+require('../models/pictureList_schema.js');
+var PictureList = mongoose.model('pictureList');
 
 
 //发布or更新文章
 exports.updateArticle = function(req, res) {
-	var _id = req.body._id ? req.body._id : new mongoose.Types.ObjectId()
+	var cb = {
+		code: 1,
+		msg: ''
+	};
+	var _id = req.body._id ? req.body._id : new mongoose.Types.ObjectId();
+
+	//图片名替换
+	var _temReg=new RegExp('temp_\\d*','g');
+	var _tempImgList = req.body.content.match(_temReg);
+	var _n=0;
+	req.body.content=req.body.content.replace(_temReg,function(v){return _id+'_img'+_n++});
+
+
+
+	//保存文章
 	Article.update({
 		_id: _id
 	}, {
@@ -23,18 +41,65 @@ exports.updateArticle = function(req, res) {
 	}, {
 		upsert: true
 	}, function(err) {
-		var cb = {
-			code: 1,
-			msg: ''
-		};
 		if (err) {
 			cb.msg = "操作失败！";
 			res.send(cb);
 			return
 		};
-		cb.code = 0;
-		res.send(cb);
 	});
+
+	//创建or更新相册
+	PictureList.update({
+		listId: 'article'
+	}, {
+		$set: {
+			date: new Date(),
+		},
+		$setOnInsert: {
+			name: '文章用图',
+			visible: true,
+		}
+	}, {
+		upsert: true
+	}, function(err) {
+		if (err) {
+			cb.msg = "操作失败！";
+			res.send(cb);
+			return
+		};
+	});
+
+	//创建or更新图片
+	var _imgReg=new RegExp(_id+'_img'+'\\d*.*?(?=\\")','g');
+	var _imgList = req.body.content.match(_imgReg);
+	var _newImgData=[];
+	if (_imgList) {
+		for (var i = _imgList.length - 1; i >= 0; i--) {
+			_newImgData.push({
+				name:req.body.name,
+				src:'/upload/article/'+_imgList[i],
+				listId:'article',
+				formId:_id
+			})
+		};
+	};
+	Picture.remove({formId:_id},function(err) {  //remove返回的data为删除的数据，不能用链式操作
+		if (err) {
+			cb.msg = "操作失败！";
+			res.send(cb);
+			return
+		};
+		Picture.create(_newImgData,function(err){
+			if (err) {
+				cb.msg = "操作失败！";
+				res.send(cb);
+				return
+			};
+		})
+	});
+
+	cb.code = 0;
+	res.send(cb);
 };
 
 
@@ -50,7 +115,7 @@ var multerConfig = {
 		}
 	}),
 	limits: {
-		fileSize: 1024* 1024,
+		fileSize: 1024 * 1024,
 		files: 1
 	},
 	fileFilter: function(req, file, cb) {
@@ -65,7 +130,7 @@ var upload = multer(multerConfig).single('file');
 exports.articleImgUpload = function(req, res) {
 	var cb = {
 		code: 1,
-		url:'',
+		url: '',
 		msg: ''
 	};
 	upload(req, res, function(err) {
@@ -177,7 +242,7 @@ exports.getArticleList = function(req, res) {
 			};
 		}
 	};
-	Article.find(query, function(err, data) {
+	Article.find(query,null,{sort:{date:-1}},function(err, data) {
 		var cb = {
 			code: 1,
 			data: {},
@@ -212,8 +277,8 @@ exports.getArticleNum = function(req, res) {
 	}).exec()
 
 	Promise.all([_article, _code]).then(function(results) {
-		cb.data.articleNum=results[0];
-		cb.data.codeNum=results[1];
+		cb.data.articleNum = results[0];
+		cb.data.codeNum = results[1];
 		cb.code = 0;
 		res.send(cb);
 	}, function(err) {

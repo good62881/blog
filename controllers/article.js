@@ -8,6 +8,7 @@ var PictureList = mongoose.model('pictureList');
 
 
 //发布or更新文章
+var fs = require('fs');
 exports.updateArticle = function(req, res) {
 	var cb = {
 		code: 1,
@@ -16,12 +17,17 @@ exports.updateArticle = function(req, res) {
 	var _id = req.body._id ? req.body._id : new mongoose.Types.ObjectId();
 
 	//图片名替换
-	var _temReg=new RegExp('temp_\\d*','g');
-	var _tempImgList = req.body.content.match(_temReg);
+	var _temReg=new RegExp('temp_.*?(?=\\")','g')
+	var _tempImgList = {};
+	var _imgList=[];
 	var _n=0;
-	req.body.content=req.body.content.replace(_temReg,function(v){return _id+'_img'+_n++});
-
-
+	req.body.content=req.body.content.replace(_temReg,function(str){
+		_n++;
+		var _val=_id+'_img'+_n+'.'+str.split('.')[1];
+		_imgList.push(_val);
+		_tempImgList[str]=_val;
+		return _val;
+	});
 
 	//保存文章
 	Article.update({
@@ -70,18 +76,14 @@ exports.updateArticle = function(req, res) {
 	});
 
 	//创建or更新图片
-	var _imgReg=new RegExp(_id+'_img'+'\\d*.*?(?=\\")','g');
-	var _imgList = req.body.content.match(_imgReg);
 	var _newImgData=[];
-	if (_imgList) {
-		for (var i = _imgList.length - 1; i >= 0; i--) {
-			_newImgData.push({
-				name:req.body.name,
-				src:'/upload/article/'+_imgList[i],
-				listId:'article',
-				formId:_id
-			})
-		};
+	for (var i = _imgList.length - 1; i >= 0; i--) {
+		_newImgData.push({
+			name:req.body.name,
+			src:'/upload/article/'+_imgList[i],
+			listId:'article',
+			formId:_id
+		})
 	};
 	Picture.remove({formId:_id},function(err) {  //remove返回的data为删除的数据，不能用链式操作
 		if (err) {
@@ -97,6 +99,24 @@ exports.updateArticle = function(req, res) {
 			};
 		})
 	});
+
+
+	//重命名并删除临时图片
+	var _files = fs.readdirSync('out/public/upload/article/');
+	//var _reg = new RegExp('' + req.session.user.account);
+	for (var i = _files.length - 1; i >= 0; i--) {
+		if (/^temp_/.test(_files[i])) {
+			if (_tempImgList[_files[i]]) {
+				console.log(_files[i])
+			}else{
+				fs.unlink(_files[i]);
+			}
+			
+		}
+		// if (/^avatar_/.test(_files[i]) && _files[i] != req.file.filename) {
+		// 	fs.unlinkSync('out/public/upload/article/' + _files[i]);
+		// }
+	}
 
 	cb.code = 0;
 	res.send(cb);

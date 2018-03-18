@@ -190,7 +190,6 @@ exports.avatarUpload = function(req, res) {
 			};
 			//删除掉原头像文件
 			var _files = fs.readdirSync('out/public/images');
-			//var _reg = new RegExp('' + req.session.user.account);
 			for (var i = _files.length - 1; i >= 0; i--) {
 				if (/^avatar_/.test(_files[i]) && _files[i] != req.file.filename) {
 					fs.unlinkSync('out/public/images/' + _files[i]);

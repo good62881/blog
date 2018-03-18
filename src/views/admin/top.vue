@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import '../../public/font/iconfont.css';
 
 export default {
 	props: ['userInfo'],

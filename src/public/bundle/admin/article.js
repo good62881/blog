@@ -1,5 +1,4 @@
 import '../../css/common.less';
-import '../../font/iconfont.css';
 import '../../css/admin/article.less';
 
 //vue相关
@@ -221,14 +220,6 @@ var articleEdit = Vue.extend({
 								'script': 'sub'
 							}, {
 								'script': 'super'
-							}],
-							[{
-								'indent': '-1'
-							}, {
-								'indent': '+1'
-							}],
-							[{
-								'align': []
 							}],
 							[{
 								'color': []

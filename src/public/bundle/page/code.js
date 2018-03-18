@@ -1,5 +1,5 @@
 import '../../css/common.less';
-import '../../css/page/index.less';
+import '../../css/page/code.less';
 
 //vue相关
 import Vue from 'vue';
@@ -27,20 +27,17 @@ var app = new Vue({
 			type: '',
 			val: '',
 		},
-		articleList: ''
+		codeList: ''
 	},
 	components: {
 		CTop: CTop,
 		CRight: CRight
 	},
 	directives: {
-		cutHtml: function(el, binding) {
+		highlight: function(el, binding) {
 			$(el).empty();
-			var _img = $(binding.value).find('img').first();
-			if (_img[0]) {
-				$(el).append($('<div class="article_img"></div>').append(_img))
-			}
-			var _p = $(binding.value).filter(':not(:has(img))').slice(0, 3)
+			
+			var _p = $(binding.value).filter('pre').first()
 			$(el).append(_p);
 
 			var _blocks = el.querySelectorAll('pre');
@@ -61,13 +58,13 @@ var app = new Vue({
 				endDate: this.searchForm.endDate,
 				type: this.searchForm.type,
 				val: this.searchForm.val,
-				class: 1,
+				class: 2,
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};
 			$.post("/Api/getArticleList", _data, function(res) {
 				if (!res.code) {
-					that.articleList = res.data
+					that.codeList = res.data
 				} else {
 					that.$message.error(res.msg);
 				}

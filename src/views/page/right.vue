@@ -5,18 +5,19 @@
 		<img :src="userInfo.avatar" alt="">
 	</div>
 	<div class="right_num">
-		<p>文章<br>245</p><p>照片<br>356</p><p>留言<br>6641</p>
+		<p>文章<br>245</p><p>代码<br>356</p><p>图片<br>6641</p>
 	</div>
 	<div class="right_search">
-		<!-- <el-input placeholder="请输入搜索内容" size="mini">
-			<el-select slot="prepend">
-				<el-option label="文章" value="1"></el-option>
-				<el-option label="实例" value="2"></el-option>
+		<el-input v-model="search.val" placeholder="请输入搜索内容"  @keyup.enter.native="submit" size="mini">
+			<el-select v-model="search.type" slot="prepend">
+				<el-option label="标题" value="name"></el-option>
+				<el-option label="标签" value="tags"></el-option>
 			</el-select>
-		</el-input> -->
+			<i slot="suffix" class="el-input__icon el-icon-search" @click="submit"></i>
+		</el-input>
 	</div>
 	<dl class="right_me">
-		<dt><a href="#">更多</a>关于我</dt>
+		<dt>关于我</dt>
 		<dd>昵称：{{userInfo.name}}</dd>
 		<dd>年龄：{{userInfo.age?userInfo.age:'保密'}}</dd>
 		<dd>职业：{{userInfo.job}}</dd>
@@ -66,9 +67,16 @@ import CCalendar from './calendar.vue';
 
 
 export default {
+	props: ['searchForm'],
 	data: function () {
 		return {
 			userInfo:'',
+			search:{
+				startDate: '',
+				endDate: '',
+				type: 'name',
+				val: '',
+			}
 		}
 	},
 	components: {
@@ -87,7 +95,22 @@ export default {
 	},
 	methods: {
 		cbDate:function(d) {
-			console.log(d)
+			var _date=d.toString().split('/');
+			if (_date.length==1) {
+				this.search.startDate=new Date(_date[0],0,1);
+				this.search.endDate=new Date(_date[0]*1+1,0,1);
+			}else if(_date.length==2){
+				this.search.startDate=new Date(_date[0],_date[1]-1,1);
+				this.search.endDate=new Date(_date[0],_date[1],1);
+			}else if(_date.length==3){
+				this.search.startDate=new Date(_date[0],_date[1]-1,_date[2]);
+				this.search.endDate=new Date(_date[0],_date[1]-1,_date[2]*1+1);
+			}
+			this.submit()
+		},
+		submit:function() {
+			this.$emit('update:searchForm', JSON.parse(JSON.stringify(this.search)));
+			this.$emit('research')
 		}
 	}
 }
@@ -110,7 +133,7 @@ export default {
 	}
 	&_search{
 		margin-left: -21px; margin-right: -21px; line-height: 40px; background-color: #1f7fbb;
-		.el-select{ width:80px;}
+		.el-select{ width:75px;}
 	}
 	&_me{
 		dt{

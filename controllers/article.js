@@ -16,18 +16,83 @@ exports.updateArticle = function(req, res) {
 	};
 	var _id = req.body._id ? req.body._id : new mongoose.Types.ObjectId();
 
-	//图片名替换
-	var _temReg=new RegExp('temp_.*?(?=\\")','g')
-	var _tempImgList = {};
-	var _imgList=[];
-	var _n=0;
-	req.body.content=req.body.content.replace(_temReg,function(str){
-		_n++;
-		var _val=_id+'_img'+_n+'.'+str.split('.')[1];
-		_imgList.push(_val);
-		_tempImgList[str]=_val;
-		return _val;
-	});
+	//判断是否有图
+	if (/<img.*?(>|\/>)/.test(req.body.content)) {
+		//临时图片名替换
+		var _temReg=new RegExp('temp_.*?(?=\\")','g')
+		var _tempImgList = {};
+		req.body.content=req.body.content.replace(_temReg,function(str){
+			var _val=_id+'_img'+str.split('_')[1];
+			_tempImgList[str]=_val;
+			return _val;
+		});
+
+		//所有图片列表
+		var _imgReg=new RegExp(_id+'_img'+'.*?(?=\\")','g');
+		var _imgList = req.body.content.match(_imgReg);
+
+		//创建or更新相册
+		PictureList.update({
+			listId: 'article'
+		}, {
+			$set: {
+				date: new Date(),
+			},
+			$setOnInsert: {
+				name: '文章用图',
+				visible: true,
+			}
+		}, {
+			upsert: true
+		}, function(err) {
+			if (err) {
+				cb.msg = "操作失败！";
+				res.send(cb);
+				return
+			};
+		});
+
+		//创建or更新图片
+		var _newImgData=[];
+		for (var i = _imgList.length - 1; i >= 0; i--) {
+			_newImgData.push({
+				name:req.body.name,
+				src:'/upload/article/'+_imgList[i],
+				listId:'article',
+				formId:_id
+			})
+		};
+		Picture.remove({formId:_id},function(err) {  //remove返回的data为删除的数据，不能用链式操作
+			if (err) {
+				cb.msg = "操作失败！";
+				res.send(cb);
+				return
+			};
+			Picture.create(_newImgData,function(err){
+				if (err) {
+					cb.msg = "操作失败！";
+					res.send(cb);
+					return
+				};
+			})
+		});
+		//重命名并删除临时图片
+		var _files = fs.readdirSync('out/public/upload/article/');
+		for (var i = _files.length - 1; i >= 0; i--) {
+			var _reg = new RegExp(_id);
+			if (_reg.test(_files[i]) && _imgList.indexOf(_files[i])==-1) {
+				fs.unlinkSync('out/public/upload/article/' + _files[i]);
+			}
+			if (/temp_/.test(_files[i])) {
+				if (_tempImgList[_files[i]]) {
+					fs.renameSync('out/public/upload/article/' + _files[i], 'out/public/upload/article/' + _tempImgList[_files[i]])
+				}else{
+					fs.unlinkSync('out/public/upload/article/' + _files[i]);
+				}
+			}
+		}
+	};
+	
 
 	//保存文章
 	Article.update({
@@ -54,70 +119,7 @@ exports.updateArticle = function(req, res) {
 		};
 	});
 
-	//创建or更新相册
-	PictureList.update({
-		listId: 'article'
-	}, {
-		$set: {
-			date: new Date(),
-		},
-		$setOnInsert: {
-			name: '文章用图',
-			visible: true,
-		}
-	}, {
-		upsert: true
-	}, function(err) {
-		if (err) {
-			cb.msg = "操作失败！";
-			res.send(cb);
-			return
-		};
-	});
-
-	//创建or更新图片
-	var _newImgData=[];
-	for (var i = _imgList.length - 1; i >= 0; i--) {
-		_newImgData.push({
-			name:req.body.name,
-			src:'/upload/article/'+_imgList[i],
-			listId:'article',
-			formId:_id
-		})
-	};
-	Picture.remove({formId:_id},function(err) {  //remove返回的data为删除的数据，不能用链式操作
-		if (err) {
-			cb.msg = "操作失败！";
-			res.send(cb);
-			return
-		};
-		Picture.create(_newImgData,function(err){
-			if (err) {
-				cb.msg = "操作失败！";
-				res.send(cb);
-				return
-			};
-		})
-	});
-
-
-	//重命名并删除临时图片
-	var _files = fs.readdirSync('out/public/upload/article/');
-	//var _reg = new RegExp('' + req.session.user.account);
-	for (var i = _files.length - 1; i >= 0; i--) {
-		if (/^temp_/.test(_files[i])) {
-			if (_tempImgList[_files[i]]) {
-				console.log(_files[i])
-			}else{
-				fs.unlink(_files[i]);
-			}
-			
-		}
-		// if (/^avatar_/.test(_files[i]) && _files[i] != req.file.filename) {
-		// 	fs.unlinkSync('out/public/upload/article/' + _files[i]);
-		// }
-	}
-
+	
 	cb.code = 0;
 	res.send(cb);
 };

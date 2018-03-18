@@ -24,7 +24,7 @@
 		<div class="article_ctr fix">
 			<el-form inline size="small" :model="searchForm" class="fr">
 				<el-form-item>
-					<el-date-picker v-model="searchForm.date" type="daterange" :editable="false" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+					<el-date-picker v-model="searchForm.date" type="daterange" :editable="false" :default-time="['00:00:00', '23:59:59']" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 				</el-form-item>
 				<el-form-item>
 					<el-select v-model="searchForm.class">
@@ -52,7 +52,7 @@
 			<el-dropdown trigger="click" @command="selectionOpt">
 				<el-button size="small" type="primary">批量操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
 				<el-dropdown-menu slot="dropdown">
-					<el-dropdown-item :command="1">隐藏</el-dropdown-item>
+					<el-dropdown-item :command="1">切换显示</el-dropdown-item>
 					<el-dropdown-item :command="2">删除</el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>

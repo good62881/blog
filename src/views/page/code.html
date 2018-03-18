@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
-	<title>首页</title>
+	<title>代码</title>
 </head>
 <body>
 <div id="app" v-cloak>
@@ -11,7 +11,7 @@
 		<c-right :search-form.sync="searchForm" @research="search"></c-right>
 		<div class="con">
 			<div v-if="(searchForm.startDate && searchForm.endDate) || (searchForm.type && searchForm.val)" class="search">
-				文章搜索&nbsp;&gt;&nbsp;
+				代码搜索&nbsp;&gt;&nbsp;
 				<template v-if="searchForm.startDate && searchForm.endDate">时间:{{new Date(searchForm.startDate).toLocaleDateString()+'至'+new Date(searchForm.endDate).toLocaleDateString()}}</template>
 				<template v-if="searchForm.type && searchForm.val">
 					<template v-if="searchForm.type=='name'">标题</template>
@@ -19,15 +19,15 @@
 					:{{searchForm.val}}
 				</template>
 			</div>
-			<div v-for="item in articleList.list" class="list">
-				<h1 class="title"><a :href="'article?id='+item._id">{{item.name}}</a></h1>
+			<div v-for="item in codeList.list" class="list">
+				<h1 class="title"><a :href="'code?id='+item._id">{{item.name}}</a></h1>
 				<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
-				<div class="article" v-cut-html="item.content">
+				<div class="code" v-highlight="item.content">
 					
 				</div>
 			</div>
 			<div class="tc">
-				<el-pagination background layout="total, prev, pager, next, jumper" :page-size="pageSize" :total="articleList.total" @current-change="goPage"></el-pagination>
+				<el-pagination background layout="total, prev, pager, next, jumper" :page-size="pageSize" :total="codeList.total" @current-change="goPage"></el-pagination>
 			</div>
 		</div>
 	</div>

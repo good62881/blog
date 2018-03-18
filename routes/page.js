@@ -15,8 +15,28 @@ app.get('/',function(req,res){
 app.get('/article',function(req,res){   
 	res.render('page/article');
 });
+app.get('/code',function(req,res){   
+	res.render('page/code');
+});
+app.post('/Api/getArticleList',page.getArticleList);
+
+
 
 //获取个人信息
 app.post('/Api/getInfo',page.getInfo);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

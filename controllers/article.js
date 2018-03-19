@@ -105,9 +105,6 @@ exports.updateArticle = function(req, res) {
 			tags: req.body.tags ? req.body.tags : [],
 			visible: req.body.visible,
 			content: req.body.content
-		},
-		$setOnInsert: {
-			PV: 0
 		}
 	}, {
 		upsert: true

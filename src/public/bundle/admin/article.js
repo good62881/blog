@@ -38,8 +38,7 @@ var articleList = Vue.extend({
 				class: '',
 				visible: true,
 				type: 'name',
-				val: '',
-				sort: 1
+				val: ''
 			},
 			formCopy: '',
 			tableData: '',
@@ -65,7 +64,6 @@ var articleList = Vue.extend({
 				visible: data.visible,
 				type: data.type,
 				val: data.val,
-				sort: data.sort,
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};
@@ -99,21 +97,6 @@ var articleList = Vue.extend({
 				this.getData(this.formCopy);
 			} else {
 				this.pageNo = 1;
-			}
-		},
-		sortSet: function(v) {
-			var that = this;
-			for (var p in that.sortDf) {
-				if (p == v) {
-					that.sortDf[p] = !that.sortDf[p]
-				} else {
-					delete that.sortDf[p];
-					that.$set(that.sortDf, v, 1);
-				}
-			};
-			if (that.formCopy) {
-				that.formCopy.pageNo = 1;
-				that.getData(that.formCopy);
 			}
 		},
 		//多选

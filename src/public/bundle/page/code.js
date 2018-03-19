@@ -21,12 +21,6 @@ var app = new Vue({
 	data: {
 		pageNo: 1,
 		pageSize: 10,
-		searchForm:{
-			startDate: '',
-			endDate: '',
-			type: '',
-			val: '',
-		},
 		codeList: ''
 	},
 	components: {
@@ -54,10 +48,6 @@ var app = new Vue({
 		search: function() {
 			var that = this;
 			var _data = {
-				startDate: this.searchForm.startDate,
-				endDate: this.searchForm.endDate,
-				type: this.searchForm.type,
-				val: this.searchForm.val,
 				class: 2,
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,

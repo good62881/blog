@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>文章</title>
+</head>
+<body>
+<div id="app" v-cloak>
+	<c-top></c-top>
+	<div class="main fix">
+		<c-right></c-right>
+		<div class="con">
+			<div class="list">
+				<h2 class="title">{{detail.name}}</h2>
+				<div class="info">发布于：{{new Date(detail.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="detail.tags[0]">标签：{{detail.tags.join(',')}}</template></div>
+				<div v-cut-html="detail.content" class="article">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+</body>
+</html>

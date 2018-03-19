@@ -2,10 +2,10 @@
 <template>
 <div class="right">
 	<div class="right_avatar">
-		<img :src="userInfo.avatar" alt="">
+		<img :src="count.userInfo.avatar" alt="">
 	</div>
 	<div class="right_num">
-		<p>文章<br>245</p><p>代码<br>356</p><p>图片<br>6641</p>
+		<p>文章<br>{{count.count.article}}</p><p>代码<br>{{count.count.code}}</p><p>图片<br>{{count.count.img}}</p>
 	</div>
 	<div class="right_search">
 		<el-input v-model="search.val" placeholder="请输入搜索内容"  @keyup.enter.native="submit" size="mini">
@@ -18,38 +18,31 @@
 	</div>
 	<dl class="right_me">
 		<dt>关于我</dt>
-		<dd>昵称：{{userInfo.name}}</dd>
-		<dd>年龄：{{userInfo.age?userInfo.age:'保密'}}</dd>
-		<dd>职业：{{userInfo.job}}</dd>
-		<dd>邮箱：{{userInfo.email}}</dd>
+		<dd>昵称：{{count.userInfo.name}}</dd>
+		<dd>年龄：{{count.userInfo.age?count.userInfo.age:'保密'}}</dd>
+		<dd>职业：{{count.userInfo.job}}</dd>
+		<dd>邮箱：{{count.userInfo.email}}</dd>
 	</dl>
 	<c-calendar :dayData="{'2017/12/6':10,'2017/12/3':20}" :monthData="{'2017/12':120,'2017/2':20}" :yearData="{'2016':12,'2014':20}" @cbDate="cbDate"></c-calendar>
 	<dl class="right_list right_tag">
 		<dt>标签云</dt>
 		<dd>
-			<a href="">node</a>
-			<a href="">js</a>
-			<a href="">css</a>
-			<a href="">html</a>
-			<a href="">vue</a>
-			<a href="">angular</a>
+			<a v-for="item in count.tags" :href="'search?type=tags&val='+item">{{item}}</a>
 		</dd>
 	</dl>
 	<dl class="right_list">
-		<dt><a href="#">更多</a>最新文章</dt>
-		<dd><span>05-20</span><a href="">哈哈哈哈哈哈哈</a></dd>
-		<dd><span>05-07</span><a href="">哈哈哈哈</a></dd>
-		<dd><span>05-01</span><a href="">哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>04-13</span><a href="">哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>03-17</span><a href="">哈哈哈哈哈</a></dd>
+		<dt><a href="/">更多</a>最新文章</dt>
+		<dd v-for="item in count.newArticle">
+			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
+			<a :href="'articleDetail?id='+item._id">{{item.name}}</a>
+		</dd>
 	</dl>
 	<dl class="right_list">
-		<dt><a href="#">更多</a>最新实例</dt>
-		<dd><span>05-20</span><a href="">哈哈哈哈哈哈哈</a></dd>
-		<dd><span>05-07</span><a href="">哈哈哈哈</a></dd>
-		<dd><span>05-01</span><a href="">哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>04-13</span><a href="">哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>03-17</span><a href="">哈哈哈哈哈</a></dd>
+		<dt><a href="/code">更多</a>最新代码</dt>
+		<dd v-for="item in count.newCode">
+			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
+			<a :href="'articleDetail?id='+item._id">{{item.name}}</a>
+		</dd>
 	</dl>
 	<!-- <dl class="right_list">
 		<dt><a href="#">更多</a>热门文章</dt>
@@ -67,13 +60,16 @@ import CCalendar from './calendar.vue';
 
 
 export default {
-	props: ['searchForm'],
 	data: function () {
 		return {
-			userInfo:'',
+			count:{
+				count:'',
+				newArticle:'',
+				newCode:'',
+				userInfo:'',
+				tags:''
+			},
 			search:{
-				startDate: '',
-				endDate: '',
 				type: 'name',
 				val: '',
 			}
@@ -87,7 +83,7 @@ export default {
 		//获取个人信息
 		$.post("/Api/getInfo",function(res){
 			if (!res.code) {
-				that.userInfo=res.data
+				that.count=res.data
 			} else {
 				that.$message.error(res.msg);
 			}
@@ -96,21 +92,15 @@ export default {
 	methods: {
 		cbDate:function(d) {
 			var _date=d.toString().split('/');
-			if (_date.length==1) {
-				this.search.startDate=new Date(_date[0],0,1);
-				this.search.endDate=new Date(_date[0]*1+1,0,1);
-			}else if(_date.length==2){
-				this.search.startDate=new Date(_date[0],_date[1]-1,1);
-				this.search.endDate=new Date(_date[0],_date[1],1);
-			}else if(_date.length==3){
-				this.search.startDate=new Date(_date[0],_date[1]-1,_date[2]);
-				this.search.endDate=new Date(_date[0],_date[1]-1,_date[2]*1+1);
+			if(_date.length==3){
+				location = '/search?date='+d
 			}
-			this.submit()
+			
 		},
 		submit:function() {
-			this.$emit('update:searchForm', JSON.parse(JSON.stringify(this.search)));
-			this.$emit('research')
+			if (this.search.type && this.search.val) {
+				location = '/search?type='+this.search.type+'&val='+this.search.val
+			}
 		}
 	}
 }

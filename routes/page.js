@@ -18,7 +18,14 @@ app.get('/article',function(req,res){
 app.get('/code',function(req,res){   
 	res.render('page/code');
 });
+app.get('/search',function(req,res){   
+	res.render('page/search');
+});
+app.get('/articleDetail',function(req,res){   
+	res.render('page/articleDetail');
+});
 app.post('/Api/getArticleList',page.getArticleList);
+app.post('/Api/getArticleDetail',page.getArticleDetail);
 
 
 

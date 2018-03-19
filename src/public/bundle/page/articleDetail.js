@@ -1,5 +1,5 @@
 import '../../css/common.less';
-import '../../css/page/index.less';
+import '../../css/page/articleDetail.less';
 
 //vue相关
 import Vue from 'vue';
@@ -16,12 +16,19 @@ import CRight from '../../../views/page/right.vue';
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
 
+//解析Params
+import params from '../../js/Params.js';
+
+
 var app = new Vue({
 	el: '#app',
 	data: {
-		pageNo: 1,
-		pageSize: 10,
-		articleList: ''
+		detail: {
+			name: '',
+			date: '',
+			tags: '',
+			content: '',
+		},
 	},
 	components: {
 		CTop: CTop,
@@ -29,14 +36,7 @@ var app = new Vue({
 	},
 	directives: {
 		cutHtml: function(el, binding) {
-			$(el).empty();
-			var _img = $(binding.value).find('img').first();
-			if (_img[0]) {
-				$(el).append($('<div class="article_img"></div>').append(_img))
-			}
-			var _p = $(binding.value).filter(':not(:has(img))').slice(0, 3)
-			$(el).append(_p);
-
+			$(el).append(binding.value);
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {
 				hljs.highlightBlock(block)
@@ -44,28 +44,17 @@ var app = new Vue({
 		}
 	},
 	created: function() {
-		this.search()
-	},
-	methods: {
-		//获取文章列表
-		search: function() {
-			var that = this;
-			var _data = {
-				class: 1,
-				pageNo: that.pageNo,
-				pageSize: that.pageSize,
-			};
-			$.post("/Api/getArticleList", _data, function(res) {
+		//获取文章详情
+		var that = this;
+		if (params.id) {
+			$.post("/Api/getArticleDetail", {id:params.id}, function(res) {
 				if (!res.code) {
-					that.articleList = res.data
+					that.detail = res.data
 				} else {
 					that.$message.error(res.msg);
 				}
 			});
-		},
-		goPage: function(i) {
-			this.pageNo = i;
-			this.search();
-		},
-	}
+		}
+		
+	},
 });

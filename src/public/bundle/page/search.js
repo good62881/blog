@@ -16,11 +16,20 @@ import CRight from '../../../views/page/right.vue';
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
 
+//解析Params
+import params from '../../js/Params.js';
+
 var app = new Vue({
 	el: '#app',
 	data: {
 		pageNo: 1,
 		pageSize: 10,
+		searchForm:{
+			date:params.date?[new Date(params.date),new Date(params.date.split('/')[0],params.date.split('/')[1]-1,params.date.split('/')[2],23,59,59)]:'',
+			class:'',
+			type: params.type?params.type:'name',
+			val: params.val?decodeURIComponent(params.val):'',
+		},
 		articleList: ''
 	},
 	components: {
@@ -51,7 +60,10 @@ var app = new Vue({
 		search: function() {
 			var that = this;
 			var _data = {
-				class: 1,
+				date: this.searchForm.date,
+				class: this.searchForm.class,
+				type: this.searchForm.type,
+				val: this.searchForm.val,
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};

@@ -59,10 +59,6 @@
 			<el-button size="small" type="primary" plain onclick="location = '/admin/article#/articleEdit'">发布新文章</el-button>
 		</div>
 		<div class="article_list">
-			<el-radio-group v-model="searchForm.sort" size="mini">
-				<el-radio-button label="1"><i class="el-icon-d-caret"></i>&nbsp;按时间排序</el-radio-button>
-				<el-radio-button label="2"><i class="el-icon-d-caret"></i>&nbsp;按浏览量排序</el-radio-button>
-			</el-radio-group>
 			<el-table :data="tableData.list" border size="small" @selection-change="selection">
 				<el-table-column type="selection"></el-table-column>
 				<el-table-column width="100px" label="发布时间">
@@ -72,7 +68,6 @@
 				<el-table-column label="标签">
 					<template slot-scope="scope"><el-tag disable-transitions :key="item" v-for="item in scope.row.tags">{{item}}</el-tag></template>
 				</el-table-column>
-				<el-table-column width="80px" prop="PV" label="浏览量"></el-table-column>
 				<el-table-column width="100px" label="类别">
 					<template slot-scope="scope">
 						<template v-if="scope.row.class==1">文章</template>
@@ -123,7 +118,7 @@
 			</el-form-item>
 			<el-form-item label="标签">
 				<el-tag :key="tag" v-for="tag in form.tags" closable @close="delTag(tag)">{{tag}}</el-tag>
-				<el-input class="tag_input" v-if="tagVisible" v-model="tagValue" ref="saveTagInput" @keyup.enter.native="addTag" @blur="addTag"></el-input>
+				<el-input class="tag_input" v-if="tagVisible" v-model="tagValue" ref="saveTagInput" :maxlength="5" @keyup.enter.native="addTag" @blur="addTag"></el-input>
 				<el-button v-else @click="showTagInput">+ 新增</el-button>
 			</el-form-item>
 			<el-form-item label="显示">

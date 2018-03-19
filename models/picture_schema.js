@@ -6,6 +6,7 @@ var pictureSchema = new Schema({
 	src:{type:String,required:true},
 	name:{type:String,required:true},
 	des:String,
+	visible:{type:Boolean,default:true},
 	listId:{type:String,required:true},
 	formId:String
 },{collection:'picture'});

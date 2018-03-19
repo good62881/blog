@@ -8,19 +8,10 @@
 <div id="app" v-cloak>
 	<c-top></c-top>
 	<div class="main fix">
-		<c-right :search-form.sync="searchForm" @research="search"></c-right>
+		<c-right></c-right>
 		<div class="con">
-			<div v-if="(searchForm.startDate && searchForm.endDate) || (searchForm.type && searchForm.val)" class="search">
-				文章搜索&nbsp;&gt;&nbsp;
-				<template v-if="searchForm.startDate && searchForm.endDate">时间:{{new Date(searchForm.startDate).toLocaleDateString()+'至'+new Date(searchForm.endDate).toLocaleDateString()}}</template>
-				<template v-if="searchForm.type && searchForm.val">
-					<template v-if="searchForm.type=='name'">标题</template>
-					<template v-else-if="searchForm.type=='tags'">标签</template>
-					:{{searchForm.val}}
-				</template>
-			</div>
 			<div v-for="item in articleList.list" class="list">
-				<h1 class="title"><a :href="'article?id='+item._id">{{item.name}}</a></h1>
+				<h1 class="title"><a :href="'articleDetail?id='+item._id">{{item.name}}</a></h1>
 				<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
 				<div class="article" v-cut-html="item.content">
 					

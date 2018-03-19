@@ -7,8 +7,7 @@ var articleSchema = new Schema({
 	class:{type:Number,required:true},  //文章类别  1--文章  2--代码
 	tags: [], 
 	visible:{type:Boolean,default:true}, 
-	content:{type:String,required:true},
-	PV:{type:Number,default:0},
+	content:{type:String,required:true}
 },{collection:'article'});
 
 

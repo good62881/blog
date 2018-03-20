@@ -26,15 +26,16 @@
 				<el-form-item>
 					<el-date-picker v-model="searchForm.date" type="daterange" :editable="false" :default-time="['00:00:00', '23:59:59']" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 				</el-form-item>
-				<el-form-item>
+				<el-form-item label="类别">
 					<el-select v-model="searchForm.class">
 						<el-option label="全部" value=""></el-option>
 						<el-option label="文章" :value="1"></el-option>
 						<el-option label="代码" :value="2"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item>
+				<el-form-item label="显示">
 					<el-select v-model="searchForm.visible">
+						<el-option label="全部" value=""></el-option>
 						<el-option label="显示" :value="true"></el-option>
 						<el-option label="隐藏" :value="false"></el-option>
 					</el-select>
@@ -62,16 +63,22 @@
 			<el-table :data="tableData.list" border size="small" @selection-change="selection">
 				<el-table-column type="selection"></el-table-column>
 				<el-table-column width="100px" label="发布时间">
-					<template slot-scope="scope">{{ scope.row.date | dateFilter }}</template>
+					<template slot-scope="scope">{{ new Date(scope.row.date).toLocaleDateString() }}</template>
 				</el-table-column>
 				<el-table-column prop="name" label="标题"></el-table-column>
 				<el-table-column label="标签">
 					<template slot-scope="scope"><el-tag disable-transitions :key="item" v-for="item in scope.row.tags">{{item}}</el-tag></template>
 				</el-table-column>
-				<el-table-column width="100px" label="类别">
+				<el-table-column width="100px" align="center" label="类别">
 					<template slot-scope="scope">
 						<template v-if="scope.row.class==1">文章</template>
 						<template v-else-if="scope.row.class==2">代码</template>
+					</template>
+				</el-table-column>
+				<el-table-column width="100px" align="center" label="显示">
+					<template slot-scope="scope">
+						<el-tag type="success" v-if="scope.row.visible==true">显示</el-tag>
+						<el-tag type="info" v-else-if="scope.row.visible==false">隐藏</el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column width="220px" align="center" label="操作">

@@ -36,7 +36,7 @@ var articleList = Vue.extend({
 			searchForm: {
 				date: '',
 				class: '',
-				visible: true,
+				visible: '',
 				type: 'name',
 				val: ''
 			},

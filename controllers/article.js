@@ -236,8 +236,9 @@ exports.delArticle = function(req, res) {
 
 //获取文章列表
 exports.getArticleList = function(req, res) {
-	var query = { //查询时一定注意类型的转换！
-		visible: req.body.visible === 'true' ? true : false
+	var query = {};  //查询时一定注意类型的转换！
+	if (req.body.visible) {
+		req.body.visible == 'true' ? query.visible=true : query.visible=false
 	};
 	if (req.body.date) {
 		query.date = {

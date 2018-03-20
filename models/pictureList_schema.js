@@ -5,6 +5,7 @@ var pictureListSchema = new Schema({
 	listId:{type:String,required:true},
 	date:{type:Date,default:Date.now}, 
 	name:{type:String,required:true},
+	cover:String,
 	visible:{type:Boolean,default:true}
 },{collection:'pictureList'});
 

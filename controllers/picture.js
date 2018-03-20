@@ -41,7 +41,6 @@ exports.updateArticle = function(req, res) {
 			$setOnInsert: {
 				name: '文章用图',
 				visible: true,
-				cover:'',
 			}
 		}, {
 			upsert: true

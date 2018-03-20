@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>图片管理</title>
+</head>
+<body>
+
+<div id="app" v-cloak>
+	<c-top :user-info.sync="userInfo"></c-top>
+
+	<el-row class="oh">
+		<c-nav :now="navNow"></c-nav>
+		<router-view></router-view>
+	</el-row>
+
+</div>
+
+
+<!-- 相册列表 -->
+<template id="pictureList">
+	<el-col :span="20" class="main pictureList">
+		<h2>{{tit}}</h2>
+		<div class="pictureList_ctr fix">
+			<el-button size="small" type="primary" plain onclick="location = '/admin/pictureList#/pictureListEdit'">新建相册</el-button>
+		</div>
+		<el-row :gutter="20">
+			<el-col :span="8" v-for="(o, index) in 2" :key="o">
+				<el-card>
+					<img src="" class="image">
+					<div style="padding: 14px;">
+						<span>好吃的汉堡</span>
+						<div class="bottom clearfix">
+							<time class="time">123</time>
+							<el-button type="text" class="button">操作按钮</el-button>
+						</div>
+					</div>
+				</el-card>
+			</el-col>
+		</el-row>
+	</el-col>
+</template>
+
+
+
+<!-- 相册编辑 -->
+<template id="pictureListEdit">
+	<el-col :span="20" class="main pictureList">
+		<h2>{{tit}}</h2>
+		
+	</el-col>
+</template>
+
+
+
+</body>
+</html>

@@ -8,6 +8,7 @@
 			<el-menu-item index="editPass"><a href="/admin/edit#/editPass">修改密码</a></el-menu-item>
 		</el-submenu>
 		<el-menu-item index="article"><a href="/admin/article"><i class="el-icon-edit"></i>文章管理</a></el-menu-item>
+		<el-menu-item index="pictureList"><a href="/admin/pictureList"><i class="el-icon-picture-outline"></i>图片管理</a></el-menu-item>
 	</el-menu>
 </el-col>
 </template>

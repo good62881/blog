@@ -48,11 +48,6 @@ var articleList = Vue.extend({
 	created: function() {
 		this.search();
 	},
-	filters: {
-		dateFilter: function(val) {
-			return (new Date(val)).toLocaleDateString()
-		}
-	},
 	methods: {
 		//获取列表
 		getData: function(data) {

@@ -83,8 +83,12 @@ app.post('/adminApi/getArticleNum',article.getArticleNum);
 
 
 
-
-
+// --------------图片表控制文件
+var picture=require('../controllers/picture');
+//图片管理
+app.get('/admin/pictureList',function(req,res){
+	res.render('admin/pictureList');
+});
 
 
 

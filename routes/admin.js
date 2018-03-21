@@ -89,6 +89,7 @@ var picture=require('../controllers/picture');
 app.get('/admin/pictureList',function(req,res){
 	res.render('admin/pictureList');
 });
+app.post('/adminApi/getPictureList',picture.getPictureList);
 
 
 

@@ -77,8 +77,8 @@
 				</el-table-column>
 				<el-table-column width="100px" align="center" label="显示">
 					<template slot-scope="scope">
-						<el-tag type="success" v-if="scope.row.visible==true">显示</el-tag>
-						<el-tag type="info" v-else-if="scope.row.visible==false">隐藏</el-tag>
+						<el-tag type="success" disable-transitions v-if="scope.row.visible==true">显示</el-tag>
+						<el-tag type="info" disable-transitions v-else>隐藏</el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column width="220px" align="center" label="操作">

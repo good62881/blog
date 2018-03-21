@@ -109,9 +109,9 @@ export default {
 <style scoped lang="less" rel="stylesheet/less"> 
 .right{
 	width:190px; float: right; padding:20px 20px 0 20px; margin-top: -281px; background: #fff; border: 1px solid #d8d6d6; border-radius:115px 115px 0 0;
-	&_avatar,&_num,&_search,&_me,&_list{ margin-bottom: 20px;}
+	&_avatar,&_num,&_search,&_me,&_list{ margin-bottom: 15px;}
 	&_avatar{
-		text-align: center; height: 130px; overflow: hidden;
+		text-align: center; height: 140px; overflow: hidden;
 		img{ width: 150px; border-radius: 50%}
 	}
 	&_num{

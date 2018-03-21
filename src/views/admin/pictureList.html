@@ -25,16 +25,24 @@
 			<el-button size="small" type="primary" plain onclick="location = '/admin/pictureList#/pictureListEdit'">新建相册</el-button>
 		</div>
 		<el-row :gutter="20">
-			<el-col :span="8" v-for="(o, index) in 2" :key="o">
-				<el-card>
-					<img src="" class="image">
-					<div style="padding: 14px;">
-						<span>好吃的汉堡</span>
-						<div class="bottom clearfix">
-							<time class="time">123</time>
-							<el-button type="text" class="button">操作按钮</el-button>
-						</div>
-					</div>
+			<el-col :span="4" v-for="item in list">
+				<el-card :body-style="{ padding: '10px' }">
+					<div class="pictureList_img" style="background-image: url('/images/avatar_1521455667379.jpg')"></div>
+					<p class="fix">
+						<el-tag class="fr" size="small" type="success" disable-transitions v-if="item.visible==true">显示</el-tag>
+						<el-tag class="fr" size="small" type="info" disable-transitions v-else>隐藏</el-tag>
+						{{item.name}}
+					</p>
+					<p>
+						<el-dropdown trigger="click" size="small" class="fr">
+							<el-button size="mini">操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item>切换显示</el-dropdown-item>
+								<el-dropdown-item :disabled="item.listId=='article'">删除</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+						{{ new Date(item.date).toLocaleDateString() }}
+					</p>
 				</el-card>
 			</el-col>
 		</el-row>

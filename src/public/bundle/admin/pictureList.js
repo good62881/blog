@@ -21,10 +21,19 @@ var pictureList = Vue.extend({
 	data: function() {
 		return {
 			tit: '相册列表',
+			list:''
 		};
 	},
 	created: function() {
-		
+		//获取相册列表
+		var that = this;
+		$.post("/adminApi/getPictureList",function(res){
+			if (!res.code) {
+				that.list=res.data;
+			} else {
+				that.$message.error(res.msg);
+			}
+		});
 	},
 	methods: {
 

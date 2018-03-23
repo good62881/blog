@@ -33,7 +33,7 @@ exports.updateArticle = function(req, res) {
 
 		//创建or更新相册
 		PictureList.update({
-			listId: 'article'
+			listId: 0
 		}, {
 			$set: {
 				date: new Date(),
@@ -41,7 +41,7 @@ exports.updateArticle = function(req, res) {
 			$setOnInsert: {
 				name: '文章用图',
 				visible: true,
-				cover:'',
+				cover:''
 			}
 		}, {
 			upsert: true
@@ -59,7 +59,7 @@ exports.updateArticle = function(req, res) {
 			_newImgData.push({
 				name:req.body.name,
 				src:'/upload/article/'+_imgList[i],
-				listId:'article',
+				listId:0,
 				formId:_id
 			})
 		};

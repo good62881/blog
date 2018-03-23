@@ -33,7 +33,7 @@
 				<el-col :span="4" v-for="item in list">
 					<el-card :body-style="{ padding: '10px' }">
 						<div v-if="!item.isEdit">
-							<div class="pictureList_img" @click="goLink(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
+							<div class="pictureList_img" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
 							<p class="fix">
 								<el-tag class="fr" size="small" type="success" disable-transitions v-if="item.visible==true">显示</el-tag>
 								<el-tag class="fr" size="small" type="info" disable-transitions v-else>隐藏</el-tag>

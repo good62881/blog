@@ -67,7 +67,7 @@ exports.editInfo = function(req, res) {
 		job: req.body.job,
 		email: req.body.email,
 	};
-	User.findOneAndUpdate({
+	User.update({
 		account: _info.account
 	}, {
 		$set: {
@@ -76,7 +76,7 @@ exports.editInfo = function(req, res) {
 			job: _info.job,
 			email: _info.email,
 		}
-	}, function(err, data) {
+	}, function(err) {
 		var cb = {
 			code: 1,
 			msg: ""
@@ -176,13 +176,13 @@ exports.avatarUpload = function(req, res) {
 			return
 		}
 		var _url = '/images/' + req.file.filename;
-		User.findOneAndUpdate({
+		User.update({
 			account: req.session.user.account
 		}, {
 			$set: {
 				avatar: _url
 			}
-		}, function(err, data) {
+		}, function(err) {
 			if (err) {
 				cb.msg = "上传失败！";
 				res.send(cb);

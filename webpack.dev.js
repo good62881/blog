@@ -8,7 +8,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var pageArr = [
 	'page/index','page/code','page/search','page/articleDetail','page/photo',
-	'admin/login','admin/index','admin/edit','admin/article','admin/pictureList',
+	'admin/login','admin/index','admin/edit','admin/article','admin/pictureList','admin/picture',
 ];   //每个页面的入口文件
 var configEntry = {};
 pageArr.forEach((page) => {

@@ -114,8 +114,8 @@
 			<el-button size="small" type="primary" plain onclick="location = '/admin/article#/articleList'">返回列表</el-button>
 		</div>
 		<el-form class="article_edit" size="small" ref="form" :model="form" label-width="80px">
-			<el-form-item label="标题" prop="name" :rules="[{ required: true, message: '请输入标题' },{ max: 20, message: '最大输入20个字符'}]">
-				<el-input class="s_input" v-model="form.name"></el-input>
+			<el-form-item label="标题" prop="name" :rules="[{ required: true, message: '请输入标题' }]">
+				<el-input class="s_input" v-model="form.name" :maxlength="20"></el-input>
 			</el-form-item>
 			<el-form-item label="类别">
 				<el-select v-model="form.class">

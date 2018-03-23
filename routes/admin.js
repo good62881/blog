@@ -85,15 +85,20 @@ app.post('/adminApi/getArticleNum',article.getArticleNum);
 
 // --------------图片表控制文件
 var picture=require('../controllers/picture');
-//图片管理
+//相册管理
 app.get('/admin/pictureList',function(req,res){
 	res.render('admin/pictureList');
 });
+app.post('/adminApi/editPictureList',picture.editPictureList);
 app.post('/adminApi/getPictureList',picture.getPictureList);
+app.post('/adminApi/togglePictureList',picture.togglePictureList);
+app.post('/adminApi/delPictureList',picture.delPictureList);
 
-
-
-
+//图片管理
+app.get('/admin/picture',function(req,res){
+	res.render('admin/picture');
+});
+app.post('/adminApi/getPicture',picture.getPicture);
 
 
 

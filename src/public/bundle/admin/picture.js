@@ -1,5 +1,5 @@
 import '../../css/common.less';
-import '../../css/admin/pictureList.less';
+import '../../css/admin/picture.less';
 
 //vue相关
 import Vue from 'vue';
@@ -12,8 +12,8 @@ Vue.use(ElementUI);
 import CTop from '../../../views/admin/top.vue';
 import CNav from '../../../views/admin/nav.vue';
 
-import '../../images/noCover.png';
-
+//解析Params
+import params from '../../js/Params.js';
 
 //主体
 var app = new Vue({
@@ -21,14 +21,7 @@ var app = new Vue({
 	data: {
 		userInfo: '',
 		navNow: 'pictureList',
-		isAdd:false,
-		addForm:{
-			name:'',
-			visible:true
-		},
-		isSubmit:false,
 		list: '',
-		editCopy:''
 	},
 	components: {
 		CNav: CNav,
@@ -38,6 +31,17 @@ var app = new Vue({
 		this.search();
 	},
 	methods: {
+		//获取图片列表
+		search:function() {
+			var that = this;
+			$.post("/adminApi/getPicture",function(res){
+				if (!res.code) {
+					that.list=res.data;
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
 		addPictureList:function() {
 			var that = this;
 			that.$refs['addForm'].validate(function(valid) {
@@ -56,20 +60,7 @@ var app = new Vue({
 				}
 			});
 		},
-		search:function() {
-			//获取相册列表
-			var that = this;
-			$.post("/adminApi/getPictureList",function(res){
-				if (!res.code) {
-					res.data.forEach(function(v,i,a) {
-						a[i].isEdit=false
-					})
-					that.list=res.data;
-				} else {
-					that.$message.error(res.msg);
-				}
-			});
-		},
+		
 		//相册操作
 		selectionOpt: function(o) {
 			var that = this;
@@ -134,8 +125,5 @@ var app = new Vue({
 				}
 			});
 		},
-		goLink:function(id) {
-			location = '/admin/picture?id='+id
-		}
 	}
 });

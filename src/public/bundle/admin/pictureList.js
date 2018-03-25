@@ -38,6 +38,7 @@ var app = new Vue({
 		this.search();
 	},
 	methods: {
+		//新建相册
 		addPictureList:function() {
 			var that = this;
 			that.$refs['addForm'].validate(function(valid) {

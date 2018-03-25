@@ -21,6 +21,9 @@ var app = new Vue({
 	data: {
 		userInfo: '',
 		navNow: 'pictureList',
+		listId:params.id,
+		isUpload:false,
+		uploadVisible:false,
 		list: '',
 	},
 	components: {
@@ -34,7 +37,7 @@ var app = new Vue({
 		//获取图片列表
 		search:function() {
 			var that = this;
-			$.post("/adminApi/getPicture",function(res){
+			$.post("/adminApi/getPicture",{id:this.listId},function(res){
 				if (!res.code) {
 					that.list=res.data;
 				} else {
@@ -42,88 +45,23 @@ var app = new Vue({
 				}
 			});
 		},
-		addPictureList:function() {
-			var that = this;
-			that.$refs['addForm'].validate(function(valid) {
-				if (valid) {
-					that.isSubmit = true
-					$.post('/adminApi/editPictureList', that.addForm, function(res) {
-						if (!res.code) {
-							that.$message.success('新建成功！');
-							that.isAdd=false;
-							that.search();
-						} else {
-							that.$message.error(res.msg);
-						}
-						that.isSubmit = false;
-					});
-				}
-			});
+		//图片上传
+		pictureUpload:function(res) {
+			this.isUpload=false;
 		},
-		
-		//相册操作
-		selectionOpt: function(o) {
-			var that = this;
-			if (o.type == 1) {
-				that.togglePictureList(o.id,o.visible)
-			} else if (o.type == 2) {
-				this.list.forEach(function(v,i,a) {
-					a[i].isEdit=false
-				});
-				o.item.isEdit=true;
-				this.editCopy=JSON.parse(JSON.stringify(o.item));
-			} else if (o.type == 3) {
-				that.$confirm('确认删除相册？关联图片将全部删除，请谨慎操作！', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning',
-					callback: function(action) {
-						if (action == 'confirm') {
-							that.delPictureList(o.id)
-						}
-					}
-				});
-			}
+		pictureUploadProgress:function() {
+			this.isUpload=true
 		},
-		togglePictureList: function(id, visible) {
-			var that = this;
-			$.post("/adminApi/togglePictureList", {
-				id: id,
-				visible: visible
-			}, function(res) {
-				if (!res.code) {
-					that.search();
-					that.$message.success('操作成功！');
-				} else {
-					that.$message.error(res.msg);
-				}
-			});
+		pictureUploadError:function(err) {
+			this.isUpload=false
+			this.$message.error('上传失败！');
 		},
-		editPictureList: function() {
-			var that = this;
-			that.$refs['editCopy'][0].validate(function(valid) {
-				if (valid) {
-					$.post("/adminApi/editPictureList",that.editCopy, function(res) {
-						if (!res.code) {
-							that.search();
-							that.$message.success('操作成功！');
-						} else {
-							that.$message.error(res.msg);
-						}
-					});
-				}
-			});
+		maxPicture:function() {
+			this.$message.error('最多同时上传5张图片');
 		},
-		delPictureList: function(id) {
-			var that = this;
-			$.post("/adminApi/delPictureList",{id:id}, function(res) {
-				if (!res.code) {
-					that.search();
-					that.$message.success('删除成功！');
-				} else {
-					that.$message.error(res.msg);
-				}
-			});
+		finishUpload:function() {
+			this.uploadVisible=false;
+			this.$refs.upload.clearFiles();
 		},
 	}
 });

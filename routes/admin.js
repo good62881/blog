@@ -99,7 +99,7 @@ app.get('/admin/picture',function(req,res){
 	res.render('admin/picture');
 });
 app.post('/adminApi/getPicture',picture.getPicture);
-
+app.post('/adminApi/pictureUpload',picture.pictureUpload);
 
 
 

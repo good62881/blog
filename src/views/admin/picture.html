@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
-	<title>图片管理</title>
+	<title>图片列表</title>
 </head>
 <body>
 
@@ -11,9 +11,20 @@
 
 	<el-row class="oh">
 		<c-nav :now="navNow"></c-nav>
-		<el-col :span="20" class="main pictureList">
-			<h2>相册列表</h2>
-			<el-form class="pictureList_ctr" ref="addForm" :model="addForm" size="small" inline>
+		<el-col :span="20" class="main picture">
+			<h2>图片列表</h2>
+			<div class="picture_ctr">
+				<el-button @click="uploadVisible=true">返回相册</el-button>
+				<el-dropdown split-button type="primary">
+					编辑
+					<el-dropdown-menu slot="dropdown">
+						<el-dropdown-item>切换显示</el-dropdown-item>
+						<el-dropdown-item>删除</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+				<el-button type="primary" @click="uploadVisible=true">上传图片</el-button>
+			</div>
+			<!-- <el-form class="pictureList_ctr" ref="addForm" :model="addForm" size="small" inline>
 				<el-form-item v-show="!isAdd">
 					<el-button type="primary" @click="isAdd=true">新建相册</el-button>
 				</el-form-item>
@@ -28,8 +39,8 @@
 					<el-button type="info" @click="isAdd=false">取消</el-button>
 				</el-form-item>
 				
-			</el-form>
-			<el-row :gutter="20">
+			</el-form> -->
+			<!-- <el-row :gutter="20">
 				<el-col :span="4" v-for="item in list">
 					<el-card :body-style="{ padding: '10px' }">
 						<div v-if="!item.isEdit">
@@ -65,7 +76,18 @@
 						</div>
 					</el-card>
 				</el-col>
-			</el-row>
+			</el-row> -->
+
+
+
+			<el-dialog :visible.sync="uploadVisible" width="400px">
+				<el-upload class="picture_upload" ref="upload" accept="image/*" drag multiple :data="{listId:listId}" :limit="5" :on-exceed="maxPicture" :on-success="pictureUpload" :on-error="pictureUploadError" :before-upload="pictureUploadProgress" action="/adminApi/pictureUpload">
+					<i class="el-icon-upload"></i>
+					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+					<div class="el-upload__tip" slot="tip">最多同时上传5张图片，单个文件大小不超过1MB</div>
+				</el-upload>
+				<div class="tc"><el-button type="primary" :disabled="isUpload" @click="finishUpload">确认</el-button></div>
+			</el-dialog>
 		</el-col>
 	</el-row>
 

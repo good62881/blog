@@ -116,13 +116,18 @@ exports.togglePictureList = function(req, res) {
 
 //删除相册
 exports.delPictureList = function(req, res) {
+	var cb = {
+		code: 1,
+		msg: ''
+	};
+	if (req.body.id == 0) {
+		cb.msg = "不允许删除文章用图！";
+		res.send(cb);
+		return
+	}
 	PictureList.remove({
 		listId: req.body.id
 	}, function(err) {
-		var cb = {
-			code: 1,
-			msg: ''
-		};
 		if (err) {
 			cb.msg = "删除失败！";
 			res.send(cb);
@@ -263,11 +268,15 @@ exports.pictureUpload = function(req, res) {
 
 //删除图片
 exports.delPicture = function(req, res) {
-	Picture.find({
+	var _query={
 		_id: {
 			$in: req.body.id
+		},
+		formId: {
+			$exists: false
 		}
-	}, function(err, data) {
+	};
+	Picture.find(_query, function(err, data) {
 		var cb = {
 			code: 1,
 			msg: ''
@@ -276,23 +285,32 @@ exports.delPicture = function(req, res) {
 			cb.msg = '删除失败！'
 			res.send(cb);
 		} else {
-			Picture.remove({
-				_id: {
-					$in: req.body.id
+			var _srcArr = data.map(function(v) {
+				return v.src
+			});
+			//删除图片数据
+			var _remove = Picture.remove(_query);
+			//更新封面
+			var _update = PictureList.findOneAndUpdate({
+				cover: {
+					$in: _srcArr
 				}
-			}, function(err) {
-				if (err) {
-					cb.msg = "删除失败！";
-					res.send(cb);
-					return
+			}, {
+				$set: {
+					cover: ''
 				}
+			});
+			Promise.all([_remove, _update]).then(function(results) {
 				//删除图片文件
-				for (var i = data.length - 1; i >= 0; i--) {
-					fs.unlinkSync('out/public' + data[i].src);
+				for (var i = _srcArr.length - 1; i >= 0; i--) {
+					fs.unlinkSync('out/public' + _srcArr[i]);
 				}
 				cb.code = 0;
 				res.send(cb);
-			});
+			}, function(err) {
+				cb.msg = '删除失败！';
+				res.send(cb);
+			})
 		}
 
 	});

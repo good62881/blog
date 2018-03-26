@@ -106,14 +106,16 @@ var app = new Vue({
 			} else {
 				this.editList.splice(_index, 1);
 				o.isCheck = false
-			}
+			};
 			this.checkAll = this.editList.length === this.list.length;
 		},
 		addAllEditList: function(val) {
 			this.list.forEach(function(v,i,a) {
 				a[i].isCheck = val ? true : false
 			});
-			var _arr=this.list.map(function(v) {
+			var _arr=this.list.filter(function(v) {
+				return !v.formId
+			}).map(function(v) {
 				return v._id
 			});
 			this.editList = val ? _arr : [];
@@ -123,7 +125,8 @@ var app = new Vue({
 				a[i].isCheck = false
 			});
 			this.editList = [];
-			this.isEdit=false
+			this.isEdit=false;
+			this.checkAll=false;
 		},
 
 
@@ -131,7 +134,7 @@ var app = new Vue({
 		//批量操作
 		editListOpt: function(v) {
 			var that = this;
-			if (!this.editList.length) {
+			if (!that.editList.length) {
 				that.$message.error('请先选择！');
 				return
 			}
@@ -154,14 +157,13 @@ var app = new Vue({
 		//图片操作
 		selectionOpt: function(o) {
 			var that = this;
-			var _msg=this.listId!=0?'确认删除图片？请谨慎操作！':'确认删除图片？请谨慎操作！<br />(删除文章用图将影响文章正常显示)';
 			if (o.type == 1) {
 				that.setPictureListCover(o.id, o.src);
 			} else if (o.type == 2) {
 				that.editList = [];
 				that.editList.push(o.id);
 			} else if (o.type == 3) {
-				that.$confirm(_msg, '提示', {
+				that.$confirm('确认删除图片？请谨慎操作！', '提示', {
 					dangerouslyUseHTMLString: true,
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',

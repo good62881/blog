@@ -40,7 +40,6 @@
 			<el-row :gutter="20">
 				<el-col :span="4" v-for="item in list">
 					<el-card :body-style="{ padding: '10px' }">
-						<div v-if="isEdit" class="picture_check" @click="addEditList(item)"><i v-if="item.isCheck" class="el-icon-check"></i></div>
 						<div class="picture_img" :style="'background-image:url('+item.src+')'"></div>
 						<p class="fix"><span class="fr">{{ new Date(item.date).toLocaleDateString() }}</span>{{item.name}}</p>
 						<p class="fix">
@@ -48,13 +47,13 @@
 								<el-button size="mini">操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
 								<el-dropdown-menu slot="dropdown">
 									<el-dropdown-item :command="{type:1,id:item.listId,src:item.src}">设为封面</el-dropdown-item>
-									<el-dropdown-item :command="{type:2,id:item._id}">移动到</el-dropdown-item>
-									<el-dropdown-item :command="{type:3,id:item._id}">删除</el-dropdown-item>
+									<el-dropdown-item :command="{type:2,id:item._id}" :disabled="!!item.formId">移动到</el-dropdown-item>
+									<el-dropdown-item :command="{type:3,id:item._id}" :disabled="!!item.formId">删除</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
 							{{item.des}}
 						</p>
-
+						<div v-if="isEdit && !item.formId" class="picture_check" @click="addEditList(item)"><i v-if="item.isCheck" class="el-icon-check"></i></div>
 
 						<!-- <div v-if="!item.isEdit">
 							<div class="pictureList_img" @click="goLink(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>

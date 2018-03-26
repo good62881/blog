@@ -98,8 +98,11 @@ app.post('/adminApi/delPictureList',picture.delPictureList);
 app.get('/admin/picture',function(req,res){
 	res.render('admin/picture');
 });
+app.post('/adminApi/setPictureListCover',picture.setPictureListCover);
 app.post('/adminApi/getPicture',picture.getPicture);
 app.post('/adminApi/pictureUpload',picture.pictureUpload);
+app.post('/adminApi/delPicture',picture.delPicture);
+
 
 
 

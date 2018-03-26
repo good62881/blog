@@ -59,6 +59,7 @@ exports.updateArticle = function(req, res) {
 			_newImgData.push({
 				name:req.body.name,
 				src:'/upload/article/'+_imgList[i],
+				des : '源自文章：'+req.body.name,
 				listId:0,
 				formId:_id
 			})

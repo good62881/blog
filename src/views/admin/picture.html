@@ -12,39 +12,52 @@
 	<el-row class="oh">
 		<c-nav :now="navNow"></c-nav>
 		<el-col :span="20" class="main picture">
-			<h2>图片列表</h2>
+			<h2>
+				{{pictureListInfo.name}}
+				<small>建立于：{{ new Date(pictureListInfo.date).toLocaleDateString() }}</small>
+				<el-tag v-if="pictureListInfo.visible" size="mini" type="success">显示</el-tag>
+				<el-tag v-else size="mini" type="info">隐藏</el-tag>
+			</h2>
 			<div class="picture_ctr">
-				<el-button @click="uploadVisible=true">返回相册</el-button>
-				<el-dropdown split-button type="primary">
-					编辑
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>切换显示</el-dropdown-item>
-						<el-dropdown-item>删除</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-				<el-button type="primary" @click="uploadVisible=true">上传图片</el-button>
-			</div>
-			<!-- <el-form class="pictureList_ctr" ref="addForm" :model="addForm" size="small" inline>
-				<el-form-item v-show="!isAdd">
-					<el-button type="primary" @click="isAdd=true">新建相册</el-button>
-				</el-form-item>
-				<el-form-item v-show="isAdd" label="相册名称" prop="name" :rules="[{ required: true, message: '请输入相册名称' }]">
-					<el-input v-model="addForm.name" :maxlength="10"></el-input>
-				</el-form-item>
-				<el-form-item v-show="isAdd" label="显示">
-					<el-switch v-model="addForm.visible" :disabled="isSubmit"></el-switch>
-				</el-form-item>
-				<el-form-item v-show="isAdd">
-					<el-button type="primary" @click="addPictureList">新建相册</el-button>
-					<el-button type="info" @click="isAdd=false">取消</el-button>
-				</el-form-item>
+				<template v-if="!isEdit">
+					<el-button onclick="location = '/admin/pictureList'">返回相册</el-button>&nbsp;
+					<el-button type="primary" @click="isEdit=true">批量编辑</el-button>&nbsp;
+					<el-button type="primary" @click="uploadVisible=true">上传图片</el-button>
+				</template>
+				<template v-else>
+					<el-checkbox label="全选" :indeterminate="isIndeterminate" v-model="checkAll" @change="addAllEditList" border></el-checkbox>&nbsp;
+					<el-dropdown trigger="click" split-button @click="clearEditList"  @command="editListOpt" type="primary">
+						取消编辑
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item :command="1">移动到</el-dropdown-item>
+							<el-dropdown-item :command="2">删除</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+				</template>
 				
-			</el-form> -->
-			<!-- <el-row :gutter="20">
+				
+			</div>
+			<el-row :gutter="20">
 				<el-col :span="4" v-for="item in list">
 					<el-card :body-style="{ padding: '10px' }">
-						<div v-if="!item.isEdit">
-							<div class="pictureList_img" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
+						<div v-if="isEdit" class="picture_check" @click="addEditList(item)"><i v-if="item.isCheck" class="el-icon-check"></i></div>
+						<div class="picture_img" :style="'background-image:url('+item.src+')'"></div>
+						<p class="fix"><span class="fr">{{ new Date(item.date).toLocaleDateString() }}</span>{{item.name}}</p>
+						<p class="fix">
+							<el-dropdown trigger="click" size="small" class="fr" @command="selectionOpt">
+								<el-button size="mini">操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
+								<el-dropdown-menu slot="dropdown">
+									<el-dropdown-item :command="{type:1,id:item.listId,src:item.src}">设为封面</el-dropdown-item>
+									<el-dropdown-item :command="{type:2,id:item._id}">移动到</el-dropdown-item>
+									<el-dropdown-item :command="{type:3,id:item._id}">删除</el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
+							{{item.des}}
+						</p>
+
+
+						<!-- <div v-if="!item.isEdit">
+							<div class="pictureList_img" @click="goLink(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
 							<p class="fix">
 								<el-tag class="fr" size="small" type="success" disable-transitions v-if="item.visible==true">显示</el-tag>
 								<el-tag class="fr" size="small" type="info" disable-transitions v-else>隐藏</el-tag>
@@ -73,14 +86,14 @@
 									<el-switch v-model="editCopy.visible"></el-switch>
 								</el-form-item>
 							</el-form>
-						</div>
+						</div> -->
 					</el-card>
 				</el-col>
-			</el-row> -->
+			</el-row>
 
 
 
-			<el-dialog :visible.sync="uploadVisible" width="400px">
+			<el-dialog :visible.sync="uploadVisible" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false" width="400px">
 				<el-upload class="picture_upload" ref="upload" accept="image/*" drag multiple :data="{listId:listId}" :limit="5" :on-exceed="maxPicture" :on-success="pictureUpload" :on-error="pictureUploadError" :before-upload="pictureUploadProgress" action="/adminApi/pictureUpload">
 					<i class="el-icon-upload"></i>
 					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>

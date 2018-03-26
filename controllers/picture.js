@@ -4,6 +4,7 @@ var Picture = mongoose.model('picture');
 require('../models/pictureList_schema.js');
 var PictureList = mongoose.model('pictureList');
 
+var fs = require('fs');
 
 
 //新建or更新相册
@@ -20,7 +21,6 @@ exports.editPictureList = function(req, res) {
 				date: new Date(),
 				name: req.body.name,
 				visible: req.body.visible,
-
 			},
 			$setOnInsert: {
 				cover: ''
@@ -85,25 +85,33 @@ exports.getPictureList = function(req, res) {
 
 //切换相册显示
 exports.togglePictureList = function(req, res) {
-	PictureList.update({
+	var cb = {
+		code: 1,
+		msg: ''
+	};
+	var _pictureListVisible = PictureList.update({
 		listId: req.body.id
 	}, {
 		$set: {
 			visible: req.body.visible
 		}
-	}, function(err) {
-		var cb = {
-			code: 1,
-			msg: ''
-		};
-		if (err) {
-			cb.msg = "修改失败！";
-			res.send(cb);
-			return
-		};
+	});
+	var _pictureVisible = Picture.update({
+		listId: req.body.id
+	}, {
+		$set: {
+			visible: req.body.visible
+		}
+	}, {
+		multi: true
+	});
+	Promise.all([_pictureListVisible, _pictureVisible]).then(function(results) {
 		cb.code = 0;
 		res.send(cb);
-	});
+	}, function(err) {
+		cb.msg = '操作失败！';
+		res.send(cb);
+	})
 };
 
 //删除相册
@@ -118,11 +126,59 @@ exports.delPictureList = function(req, res) {
 		if (err) {
 			cb.msg = "删除失败！";
 			res.send(cb);
+		} else {
+			Picture.find({
+				listId: req.body.id
+			}, function(err, data) {
+				if (err) {
+					cb.msg = '删除失败！'
+					res.send(cb);
+				} else {
+					Picture.remove({
+						listId: req.body.id
+					}, function(err) {
+						if (err) {
+							cb.msg = "删除失败！";
+							res.send(cb);
+							return
+						}
+						//删除图片文件
+						for (var i = data.length - 1; i >= 0; i--) {
+							fs.unlinkSync('out/public' + data[i].src);
+						}
+						cb.code = 0;
+						res.send(cb);
+					});
+				}
+
+			});
+		}
+
+	});
+};
+
+
+//设置相册封面
+exports.setPictureListCover = function(req, res) {
+	PictureList.update({
+		listId: req.body.id
+	}, {
+		$set: {
+			cover: req.body.src
+		}
+	}, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ''
+		};
+		if (err) {
+			cb.msg = "操作失败！";
+			res.send(cb);
 			return
 		};
 		cb.code = 0;
 		res.send(cb);
-	});
+	})
 };
 
 
@@ -131,7 +187,7 @@ exports.delPictureList = function(req, res) {
 exports.getPicture = function(req, res) {
 	Picture.find({
 		listId: req.body.id
-	}, '-_id -__v', function(err, data) {
+	}, '-__v', function(err, data) {
 		var cb = {
 			code: 1,
 			data: '',
@@ -149,14 +205,14 @@ exports.getPicture = function(req, res) {
 
 
 
-//文章图片上传
+//图片上传
 var multer = require('multer');
 var multerConfig = {
 	storage: multer.diskStorage({
 		destination: 'out/public/upload/picture', //可以直接配置地址，如果地址不存在，会自动创建
 		filename: function(req, file, cb) {
 			var fileFormat = (file.originalname).split(".");
-			cb(null, req.body.listId + '_' + Date.now() + '.' + fileFormat[fileFormat.length - 1]);
+			cb(null, Date.now() + '.' + fileFormat[fileFormat.length - 1]);
 		}
 	}),
 	limits: {
@@ -181,17 +237,18 @@ exports.pictureUpload = function(req, res) {
 	upload(req, res, function(err) {
 		if (err) {
 			cb.msg = "上传失败！";
-			res.status(500).send(cb);
+			res.status(403).send(cb);
 		} else {
 			Picture.create({
 				date: new Date(),
 				src: '/upload/picture/' + req.file.filename,
-				name: '未命名',
+				name: req.file.originalname.split('.')[0],
+				des: '暂无描述',
 				listId: req.body.listId
 			}, function(err) {
 				if (err) {
 					cb.msg = '上传失败！';
-					res.status(500).send(cb);
+					res.status(403).send(cb);
 					return
 				};
 				cb.code = 0;
@@ -200,4 +257,43 @@ exports.pictureUpload = function(req, res) {
 		}
 	})
 
+};
+
+
+
+//删除图片
+exports.delPicture = function(req, res) {
+	Picture.find({
+		_id: {
+			$in: req.body.id
+		}
+	}, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ''
+		};
+		if (err) {
+			cb.msg = '删除失败！'
+			res.send(cb);
+		} else {
+			Picture.remove({
+				_id: {
+					$in: req.body.id
+				}
+			}, function(err) {
+				if (err) {
+					cb.msg = "删除失败！";
+					res.send(cb);
+					return
+				}
+				//删除图片文件
+				for (var i = data.length - 1; i >= 0; i--) {
+					fs.unlinkSync('out/public' + data[i].src);
+				}
+				cb.code = 0;
+				res.send(cb);
+			});
+		}
+
+	});
 };

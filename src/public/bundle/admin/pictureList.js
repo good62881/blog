@@ -77,11 +77,11 @@ var app = new Vue({
 			if (o.type == 1) {
 				that.togglePictureList(o.id,o.visible)
 			} else if (o.type == 2) {
-				this.list.forEach(function(v,i,a) {
+				that.list.forEach(function(v,i,a) {
 					a[i].isEdit=false
 				});
 				o.item.isEdit=true;
-				this.editCopy=JSON.parse(JSON.stringify(o.item));
+				that.editCopy=JSON.parse(JSON.stringify(o.item));
 			} else if (o.type == 3) {
 				that.$confirm('确认删除相册？关联图片将全部删除，请谨慎操作！', '提示', {
 					confirmButtonText: '确定',

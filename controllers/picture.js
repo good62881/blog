@@ -281,7 +281,7 @@ exports.delPicture = function(req, res) {
 			code: 1,
 			msg: ''
 		};
-		if (err) {
+		if (err || !data[0]) {
 			cb.msg = '删除失败！'
 			res.send(cb);
 		} else {

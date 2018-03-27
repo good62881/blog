@@ -21,7 +21,7 @@
 			<div class="picture_ctr">
 				<template v-if="!isEdit">
 					<el-button onclick="location = '/admin/pictureList'">返回相册</el-button>&nbsp;
-					<el-button type="primary" @click="isEdit=true">批量编辑</el-button>&nbsp;
+					<el-button type="primary" @click="clearEditList();isEdit=true">批量编辑</el-button>&nbsp;
 					<el-button type="primary" @click="uploadVisible=true">上传图片</el-button>
 				</template>
 				<template v-else>
@@ -38,9 +38,9 @@
 				
 			</div>
 			<el-row :gutter="20">
-				<el-col :span="4" v-for="item in list">
+				<el-col :span="4" v-for="(item,i) in list">
 					<el-card :body-style="{ padding: '10px' }">
-						<div class="picture_img" :style="'background-image:url('+item.src+')'"></div>
+						<div class="picture_img" @click="showPicture(i)" :style="'background-image:url('+item.src+')'"></div>
 						<p class="fix"><span class="fr">{{ new Date(item.date).toLocaleDateString() }}</span>{{item.name}}</p>
 						<p class="fix">
 							<el-dropdown trigger="click" size="small" class="fr" @command="selectionOpt">
@@ -54,38 +54,6 @@
 							{{item.des}}
 						</p>
 						<div v-if="isEdit && !item.formId" class="picture_check" @click="addEditList(item)"><i v-if="item.isCheck" class="el-icon-check"></i></div>
-
-						<!-- <div v-if="!item.isEdit">
-							<div class="pictureList_img" @click="goLink(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
-							<p class="fix">
-								<el-tag class="fr" size="small" type="success" disable-transitions v-if="item.visible==true">显示</el-tag>
-								<el-tag class="fr" size="small" type="info" disable-transitions v-else>隐藏</el-tag>
-								{{item.name}}
-							</p>
-							<p>
-								<el-dropdown trigger="click" size="small" class="fr" @command="selectionOpt">
-									<el-button size="mini">操作<i class="el-icon-caret-bottom el-icon--right"></i></el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item :command="{type:1,id:item.listId,visible:!item.visible}">切换显示</el-dropdown-item>
-										<el-dropdown-item :command="{type:2,item:item}" :disabled="item.listId==0">编辑信息</el-dropdown-item>
-										<el-dropdown-item :command="{type:3,id:item.listId}" :disabled="item.listId==0">删除</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-								{{ new Date(item.date).toLocaleDateString() }}
-							</p>
-						</div>
-						<div v-else>
-							<div class="pictureList_img" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
-							<el-form size="mini" :show-message="false" ref="editCopy" :model="editCopy">
-								<el-form-item prop="name" :rules="[{ required: true }]">
-									<el-input v-model="editCopy.name" placeholder="请输入相册名称" :maxlength="10"></el-input>
-								</el-form-item>
-								<el-form-item label="显示">
-									<el-button class="fr" type="primary" @click="editPictureList">修改</el-button>
-									<el-switch v-model="editCopy.visible"></el-switch>
-								</el-form-item>
-							</el-form>
-						</div> -->
 					</el-card>
 				</el-col>
 			</el-row>
@@ -100,6 +68,49 @@
 				</el-upload>
 				<div class="tc"><el-button type="primary" :disabled="isUpload" @click="finishUpload">确认</el-button></div>
 			</el-dialog>
+
+
+			<el-dialog class="picture_move" :visible.sync="moveVisible" title="移动到" width="800px">
+				<el-scrollbar>
+					<el-row :gutter="10">
+						<el-col :span="4" v-for="item in pictureList" v-if="item.listId!=listId">
+							<el-card :body-style="{ padding: '10px' }">
+								<div class="picture_img" @click="moveTolist(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
+								<p>{{item.name}}</p>
+							</el-card>
+						</el-col>
+					</el-row>
+				</el-scrollbar>
+			</el-dialog>
+	
+			
+			<el-dialog class="picture_show" :visible.sync="showVisible" @open="reSize" width="80%">
+				<el-row>
+					<el-col :span="18">
+						<div class="picture_swiper">
+							<swiper :options="swiperOpt" ref="swiper">
+								<swiper-slide v-for="slide in list">
+									<img :src="slide.src" alt="">
+								</swiper-slide>
+								<div class="swiper-button-prev" slot="button-prev"></div>
+								<div class="swiper-button-next" slot="button-next"></div>
+							</swiper>
+						</div>
+						<div class="picture_previewSwiper">
+							<swiper :options="previewSwiperOpt" ref="previewSwiper">
+								<swiper-slide v-for="slide in list">
+									<img :src="slide.src" alt="">
+								</swiper-slide>
+							</swiper>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						222
+					</el-col>
+				</el-row>
+			</el-dialog>
+
+
 		</el-col>
 	</el-row>
 

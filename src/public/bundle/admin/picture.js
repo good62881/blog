@@ -5,8 +5,11 @@ import '../../css/admin/picture.less';
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
 
 Vue.use(ElementUI);
+Vue.use(VueAwesomeSwiper)
 
 //公共
 import CTop from '../../../views/admin/top.vue';
@@ -28,7 +31,21 @@ var app = new Vue({
 		uploadVisible: false,
 		list: '',
 		editList: [],
-		checkAll:false
+		checkAll: false,
+		moveVisible: false,
+		showVisible: false,
+		swiperOpt: {
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+		},
+		previewSwiperOpt: {
+			centeredSlides:true,
+			slideToClickedSlide: true,
+			slidesPerView: 'auto',
+			spaceBetween: 20,
+		}
 	},
 	components: {
 		CNav: CNav,
@@ -45,9 +62,15 @@ var app = new Vue({
 				return x.listId == that.listId
 			})[0] : '';
 		},
-		isIndeterminate:function() {
-			return this.editList.length > 0 &&  this.editList.length < this.list.length
-		}
+		isIndeterminate: function() {
+			return this.editList.length > 0 && this.editList.length < this.list.length
+		},
+		swiper: function() {
+			return this.$refs.swiper.swiper
+		},
+		previewSwiper: function() {
+			return this.$refs.previewSwiper.swiper
+		},
 	},
 	methods: {
 		//获取相册列表
@@ -110,23 +133,23 @@ var app = new Vue({
 			this.checkAll = this.editList.length === this.list.length;
 		},
 		addAllEditList: function(val) {
-			this.list.forEach(function(v,i,a) {
+			this.list.forEach(function(v, i, a) {
 				a[i].isCheck = val ? true : false
 			});
-			var _arr=this.list.filter(function(v) {
+			var _arr = this.list.filter(function(v) {
 				return !v.formId
 			}).map(function(v) {
 				return v._id
 			});
 			this.editList = val ? _arr : [];
 		},
-		clearEditList:function() {
-			this.list.forEach(function(v,i,a) {
+		clearEditList: function() {
+			this.list.forEach(function(v, i, a) {
 				a[i].isCheck = false
 			});
 			this.editList = [];
-			this.isEdit=false;
-			this.checkAll=false;
+			this.isEdit = false;
+			this.checkAll = false;
 		},
 
 
@@ -139,7 +162,7 @@ var app = new Vue({
 				return
 			}
 			if (v == 1) {
-				
+				that.moveVisible = true
 			} else if (v == 2) {
 				that.$confirm('确认删除图片？请谨慎操作！', '提示', {
 					confirmButtonText: '确定',
@@ -162,6 +185,7 @@ var app = new Vue({
 			} else if (o.type == 2) {
 				that.editList = [];
 				that.editList.push(o.id);
+				that.moveVisible = true
 			} else if (o.type == 3) {
 				that.$confirm('确认删除图片？请谨慎操作！', '提示', {
 					dangerouslyUseHTMLString: true,
@@ -178,7 +202,7 @@ var app = new Vue({
 				});
 			}
 		},
-
+		//设置封面
 		setPictureListCover: function(id, src) {
 			var that = this;
 			$.post("/adminApi/setPictureListCover", {
@@ -192,7 +216,7 @@ var app = new Vue({
 				}
 			});
 		},
-
+		//删除图片
 		delPicture: function() {
 			var that = this;
 			$.post("/adminApi/delPicture", {
@@ -201,13 +225,48 @@ var app = new Vue({
 				if (!res.code) {
 					that.getList();
 					that.editList = [];
-					that.isEdit=false;
-					that.checkAll=false;
+					that.isEdit = false;
+					that.checkAll = false;
 					that.$message.success('删除成功！');
 				} else {
 					that.$message.error(res.msg);
 				}
 			});
 		},
+		//移动图片
+		moveTolist: function(listId) {
+			var that = this;
+			$.post("/adminApi/moveToPicturelist", {
+				id: that.editList,
+				listId: listId
+			}, function(res) {
+				if (!res.code) {
+					that.getList();
+					that.editList = [];
+					that.isEdit = false;
+					that.checkAll = false;
+					that.moveVisible = false;
+					that.$message.success('移动成功！');
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
+		//显示图片滚动
+		showPicture: function(i) {
+			if (!this.isEdit) {
+				this.showVisible = true;
+			}
+		},
+		reSize: function() { //重要！swiper加载时尺寸的计算会有问题，必须用$nextTick在渲染完成后重新计算。同时重新计算需写在弹窗上，因为渲染时swiper属于弹窗的子组件。
+			var that = this;
+			that.$nextTick(function(argument) {
+				that.swiper.update();
+				that.previewSwiper.update();
+				that.swiper.controller.control=that.previewSwiper;
+				that.previewSwiper.controller.control=that.swiper;
+			});
+		}
+
 	}
 });

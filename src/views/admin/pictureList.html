@@ -52,7 +52,7 @@
 							</p>
 						</div>
 						<div v-else>
-							<div class="pictureList_img" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
+							<div class="pictureList_img" @click="getCoverList(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
 							<el-form size="mini" :show-message="false" ref="editCopy" :model="editCopy">
 								<el-form-item prop="name" :rules="[{ required: true }]">
 									<el-input v-model="editCopy.name" placeholder="请输入相册名称" :maxlength="10"></el-input>
@@ -66,6 +66,20 @@
 					</el-card>
 				</el-col>
 			</el-row>
+
+
+			<el-dialog class="pictureList_cover" :visible.sync="coverDialogVisible" title="请选择封面" width="800px">
+				<el-scrollbar>
+					<el-row :gutter="10">
+						<el-col :span="4" v-for="item in coverList">
+							<el-card :body-style="{ padding: '10px' }">
+								<div class="pictureList_img" @click="setPictureListCover(item.listId,item.src)" :style="'background-image:url('+item.src+')'"></div>
+								<p>{{item.name}}</p>
+							</el-card>
+						</el-col>
+					</el-row>
+				</el-scrollbar>
+			</el-dialog>
 		</el-col>
 	</el-row>
 

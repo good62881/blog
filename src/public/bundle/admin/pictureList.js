@@ -28,7 +28,9 @@ var app = new Vue({
 		},
 		isSubmit:false,
 		list: '',
-		editCopy:''
+		editCopy:'',
+		coverList:'',
+		coverDialogVisible:false
 	},
 	components: {
 		CNav: CNav,
@@ -135,8 +137,44 @@ var app = new Vue({
 				}
 			});
 		},
+
+		//封面操作
+		getCoverList:function(id) {
+			var that = this;
+			$.post("/adminApi/getPicture", {
+				id: id
+			}, function(res) {
+				if (!res.code) {
+					if (res.data[0]) {
+						that.coverList = res.data;
+						that.coverDialogVisible=true
+					}else{
+						that.$message.error('相册内暂无图片！');
+					}
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
+		setPictureListCover: function(id, src) {
+			var that = this;
+			$.post("/adminApi/setPictureListCover", {
+				id: id,
+				src: src
+			}, function(res) {
+				if (!res.code) {
+					that.search();
+					that.coverDialogVisible=false;
+					that.$message.success('设置成功！');
+				} else {
+					that.$message.error(res.msg);
+				}
+			});
+		},
+
+
 		goLink:function(id) {
 			location = '/admin/picture?id='+id
-		}
+		},
 	}
 });

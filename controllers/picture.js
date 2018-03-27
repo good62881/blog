@@ -265,10 +265,40 @@ exports.pictureUpload = function(req, res) {
 };
 
 
+//移动图片
+exports.moveToPicturelist = function(req, res) {
+	Picture.update({
+		_id: {
+			$in: req.body.id
+		},
+		formId: {
+			$exists: false
+		}
+	}, {
+		$set: {
+			listId: req.body.listId
+		}
+	}, {
+		multi: true
+	}, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ''
+		};
+		if (err || !data.n) {
+			cb.msg = "移动失败！";
+			res.send(cb);
+			return
+		};
+		cb.code = 0;
+		res.send(cb);
+	})
+};
+
 
 //删除图片
 exports.delPicture = function(req, res) {
-	var _query={
+	var _query = {
 		_id: {
 			$in: req.body.id
 		},

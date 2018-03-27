@@ -39,13 +39,20 @@ var app = new Vue({
 				nextEl: '.swiper-button-next',
 				prevEl: '.swiper-button-prev',
 			},
+			on: {
+				slideChange: function() {
+					app.swiperIndex=this.activeIndex
+				},
+			},
 		},
 		previewSwiperOpt: {
-			centeredSlides:true,
+			centeredSlides: true,
 			slideToClickedSlide: true,
 			slidesPerView: 'auto',
 			spaceBetween: 20,
-		}
+		},
+		swiperIndex: 0,
+		editSwiperInfo:false
 	},
 	components: {
 		CNav: CNav,
@@ -71,6 +78,9 @@ var app = new Vue({
 		previewSwiper: function() {
 			return this.$refs.previewSwiper.swiper
 		},
+		swiperInfo:function() {
+			return this.list[this.swiperIndex]?this.list[this.swiperIndex]:''
+		}
 	},
 	methods: {
 		//获取相册列表
@@ -256,17 +266,20 @@ var app = new Vue({
 		showPicture: function(i) {
 			if (!this.isEdit) {
 				this.showVisible = true;
+				this.swiperIndex = i
 			}
 		},
 		reSize: function() { //重要！swiper加载时尺寸的计算会有问题，必须用$nextTick在渲染完成后重新计算。同时重新计算需写在弹窗上，因为渲染时swiper属于弹窗的子组件。
 			var that = this;
-			that.$nextTick(function(argument) {
+			that.$nextTick(function() {
 				that.swiper.update();
 				that.previewSwiper.update();
-				that.swiper.controller.control=that.previewSwiper;
-				that.previewSwiper.controller.control=that.swiper;
+				that.swiper.controller.control = that.previewSwiper;
+				that.previewSwiper.controller.control = that.swiper;
+				that.swiper.slideTo(that.swiperIndex)
 			});
-		}
+		},
+
 
 	}
 });

@@ -105,7 +105,43 @@
 						</div>
 					</el-col>
 					<el-col :span="6">
-						222
+						<el-form v-show="!editSwiperInfo" label-width="60px">
+							<el-form-item label="标题">
+								<div>{{swiperInfo.name}}</div>
+							</el-form-item>
+							<el-form-item label="发布于">
+								<div>{{ new Date(swiperInfo.date).toLocaleDateString() }}</div>
+							</el-form-item>
+							<el-form-item label="描述">
+								<div v-if="swiperInfo.formId">源自文章：<a target="_blank" :href="'/articleDetail?id='+swiperInfo.formId">{{swiperInfo.name}}</a></div>
+								<div v-else>{{swiperInfo.des}}</div>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" v-if="!swiperInfo.formId">修改</el-button>
+							</el-form-item>
+						</el-form>
+						<!-- <el-form v-show="editSwiperInfo" ref="editForm" :model="editForm" label-width="80px">
+							<el-form-item label="姓名" prop="name" :rules="[{ required: true, message: '请输入姓名' },{ pattern: /^[\u4e00-\u9fa5]{2,5}$/, message: '请输入2~5个中文字符'}]">
+								<el-tooltip content="必填,2~5个中文字符" placement="right">
+									<el-input v-model="editForm.name"></el-input>
+								</el-tooltip>
+							</el-form-item>
+							<el-form-item label="年龄" prop="age">
+								<el-tooltip content="为0显示保密" placement="right">
+									<el-input-number v-model="editForm.age" :min="0" size="small"></el-input-number>
+								</el-tooltip>
+							</el-form-item>
+							<el-form-item label="职业" prop="job">
+								<el-input v-model="editForm.job"></el-input>
+							</el-form-item>
+							<el-form-item label="email" prop="email" :rules="[{ required: true, message: '请输入邮箱' },{ type: 'email', message: '请正确输入邮箱'}]">
+								<el-input v-model="editForm.email"></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="submitForm">确认</el-button>
+								<el-button @click="tabEdit">返回</el-button>
+							</el-form-item>
+						</el-form> -->
 					</el-col>
 				</el-row>
 			</el-dialog>

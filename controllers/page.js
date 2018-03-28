@@ -5,6 +5,8 @@ require('../models/article_schema.js');
 var Article = mongoose.model('article');
 require('../models/picture_schema.js');
 var Picture = mongoose.model('picture');
+require('../models/pictureList_schema.js');
+var PictureList = mongoose.model('pictureList');
 
 //右侧统计
 exports.getInfo = function(req, res) {
@@ -14,21 +16,12 @@ exports.getInfo = function(req, res) {
 		msg: ''
 	};
 	//获取用户信息
-	var _userInfo = User.findOne({}, {
-		name: 1,
-		age: 1,
-		job: 1,
-		email: 1,
-		avatar: 1
-	}).exec();
+	var _userInfo = User.findOne({}, 'name age job email avatar').exec();
 	//获取文章、代码
 	var _Article = Article.find({
 		class: 1,
 		visible: true,
-	}, {
-		name: 1,
-		date: 1
-	}, {
+	}, 'name date', {
 		sort: {
 			date: -1
 		}
@@ -36,10 +29,7 @@ exports.getInfo = function(req, res) {
 	var _Code = Article.find({
 		class: 2,
 		visible: true
-	}, {
-		name: 1,
-		date: 1
-	}, {
+	}, 'name date', {
 		sort: {
 			date: -1
 		}
@@ -99,12 +89,7 @@ exports.getArticleList = function(req, res) {
 			};
 		}
 	};
-	Article.find(query, {
-		name: 1,
-		date: 1,
-		tags: 1,
-		content: 1
-	}, {
+	Article.find(query,'name date tags content', {
 		sort: {
 			date: -1
 		}
@@ -132,7 +117,7 @@ exports.getArticleDetail = function(req, res) {
 	if (req.body.id) {
 		Article.findOne({
 			_id: req.body.id
-		}, function(err, data) {
+		},'name date tags content', function(err, data) {
 			var cb = {
 				code: 1,
 				data: {},
@@ -143,14 +128,53 @@ exports.getArticleDetail = function(req, res) {
 				res.send(cb);
 				return
 			};
-			cb.data = {
-				name: data.name,
-				date: data.date,
-				tags: data.tags,
-				content: data.content,
-			};
+			cb.data = data;
 			cb.code = 0;
 			res.send(cb);
 		})
 	}
+};
+
+
+
+
+
+//获取相册列表
+exports.getPictureList = function(req, res) {
+	PictureList.find({}, '-_id -__v', function(err, data) {
+		var cb = {
+			code: 1,
+			data: '',
+			msg: ''
+		};
+		if (err) {
+			cb.msg = '获取相册列表失败！';
+			res.send(cb);
+			return
+		};
+		cb.code = 0;
+		cb.data = data;
+		res.send(cb);
+	})
+};
+
+//获取图片列表
+exports.getPicture = function(req, res) {
+	Picture.find({
+		listId: req.body.id
+	}, '-_id -__v', function(err, data) {
+		var cb = {
+			code: 1,
+			data: '',
+			msg: ''
+		};
+		if (err) {
+			cb.msg = '获取图片列表失败！';
+			res.send(cb);
+			return
+		};
+		cb.code = 0;
+		cb.data = data;
+		res.send(cb);
+	})
 };

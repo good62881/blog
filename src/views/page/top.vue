@@ -5,8 +5,8 @@
 		<ul class="fix">
 			<li><a href="/">文章</a></li>
 			<li><a href="/code">代码</a></li>
+			<li><a href="/picture">照片</a></li>
 			<!-- <li><a href="">实例</a></li>
-			<li><a href="">照片</a></li>
 			<li><a href="">留言</a></li> -->
 			<li><a href="/about">关于</a></li>
 		</ul>

@@ -73,11 +73,12 @@ exports.getPictureList = function(req, res) {
 			msg: ''
 		};
 		if (err) {
-			cb.msg = '获取相册列表失败！'
-		} else {
-			cb.code = 0;
-			cb.data = data;
-		}
+			cb.msg = '获取相册列表失败！';
+			res.send(cb);
+			return
+		};
+		cb.code = 0;
+		cb.data = data;
 		res.send(cb);
 	})
 };
@@ -199,11 +200,12 @@ exports.getPicture = function(req, res) {
 			msg: ''
 		};
 		if (err) {
-			cb.msg = '获取图片列表失败！'
-		} else {
-			cb.code = 0;
-			cb.data = data;
-		}
+			cb.msg = '获取图片列表失败！';
+			res.send(cb);
+			return
+		};
+		cb.code = 0;
+		cb.data = data;
 		res.send(cb);
 	})
 };

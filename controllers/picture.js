@@ -267,26 +267,77 @@ exports.pictureUpload = function(req, res) {
 
 //移动图片
 exports.moveToPicturelist = function(req, res) {
-	Picture.update({
+	var _query = {
 		_id: {
 			$in: req.body.id
 		},
 		formId: {
 			$exists: false
 		}
-	}, {
-		$set: {
-			listId: req.body.listId
+	};
+	Picture.find(_query, function(err, data) {
+		var cb = {
+			code: 1,
+			msg: ''
+		};
+		if (err || !data[0]) {
+			cb.msg = '移动失败！'
+			res.send(cb);
+		} else {
+			var _srcArr = data.map(function(v) {
+				return v.src
+			});
+			//移动图片数据
+			var _move=Picture.update(_query, {
+				$set: {
+					listId: req.body.listId
+				}
+			}, {
+				multi: true
+			});
+			//更新封面
+			var _update = PictureList.findOneAndUpdate({
+				cover: {
+					$in: _srcArr
+				}
+			}, {
+				$set: {
+					cover: ''
+				}
+			});
+			Promise.all([_move, _update]).then(function(results) {
+				cb.code = 0;
+				res.send(cb);
+			}, function(err) {
+				cb.msg = '移动失败！';
+				res.send(cb);
+			})
+		}
+
+	});
+
+};
+
+
+//编辑图片信息
+exports.editPictureInfo = function(req, res) {
+	Picture.update({
+		_id: req.body._id,
+		formId: {
+			$exists: false
 		}
 	}, {
-		multi: true
+		$set: {
+			name:req.body.name,
+			des:req.body.des,
+		}
 	}, function(err, data) {
 		var cb = {
 			code: 1,
 			msg: ''
 		};
 		if (err || !data.n) {
-			cb.msg = "移动失败！";
+			cb.msg = "编辑失败！";
 			res.send(cb);
 			return
 		};
@@ -294,7 +345,6 @@ exports.moveToPicturelist = function(req, res) {
 		res.send(cb);
 	})
 };
-
 
 //删除图片
 exports.delPicture = function(req, res) {

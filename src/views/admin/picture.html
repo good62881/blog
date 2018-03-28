@@ -84,9 +84,9 @@
 			</el-dialog>
 	
 			
-			<el-dialog class="picture_show" :visible.sync="showVisible" @open="reSize" width="80%">
+			<el-dialog class="picture_show" :visible.sync="showVisible" @open="reSize" @close="editSwiperTab=false" width="80%">
 				<el-row>
-					<el-col :span="18">
+					<el-col class="picture_show_box" :span="18">
 						<div class="picture_swiper">
 							<swiper :options="swiperOpt" ref="swiper">
 								<swiper-slide v-for="slide in list">
@@ -104,44 +104,34 @@
 							</swiper>
 						</div>
 					</el-col>
-					<el-col :span="6">
-						<el-form v-show="!editSwiperInfo" label-width="60px">
-							<el-form-item label="标题">
-								<div>{{swiperInfo.name}}</div>
+					<el-col class="picture_show_info" :span="6">
+						<div v-if="!editSwiperTab">
+							<ul>
+								<li>
+									<p>{{pictureInfo.name}}</p>
+									<small>{{ new Date(pictureInfo.date).toLocaleString() }}</small>
+								</li>
+								<li>
+									<template v-if="pictureInfo.formId">源自文章：<a target="_blank" :href="'/articleDetail?id='+pictureInfo.formId">{{pictureInfo.name}}</a></template>
+									<template v-else>{{pictureInfo.des}}</template>
+								</li>
+								<li>
+									<el-button type="primary" v-if="!pictureInfo.formId"  @click="editPictureInfo">修改</el-button>
+								</li>
+							</ul>
+						</div>
+						<el-form v-if="editSwiperTab" ref="pictureInfoCopy" :model="pictureInfoCopy" size="small" label-width="60px">
+							<el-form-item label="标题" prop="name" :rules="[{ required: true, message: '请输入标题' }]">
+								<el-input v-model="pictureInfoCopy.name"></el-input>
 							</el-form-item>
-							<el-form-item label="发布于">
-								<div>{{ new Date(swiperInfo.date).toLocaleDateString() }}</div>
-							</el-form-item>
-							<el-form-item label="描述">
-								<div v-if="swiperInfo.formId">源自文章：<a target="_blank" :href="'/articleDetail?id='+swiperInfo.formId">{{swiperInfo.name}}</a></div>
-								<div v-else>{{swiperInfo.des}}</div>
+							<el-form-item label="描述" prop="des">
+								<el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" v-model="pictureInfoCopy.des"></el-input>
 							</el-form-item>
 							<el-form-item>
-								<el-button type="primary" v-if="!swiperInfo.formId">修改</el-button>
+								<el-button type="primary" @click="submitPictureInfo">确认</el-button>
+								<el-button @click="editSwiperTab=false">返回</el-button>
 							</el-form-item>
 						</el-form>
-						<!-- <el-form v-show="editSwiperInfo" ref="editForm" :model="editForm" label-width="80px">
-							<el-form-item label="姓名" prop="name" :rules="[{ required: true, message: '请输入姓名' },{ pattern: /^[\u4e00-\u9fa5]{2,5}$/, message: '请输入2~5个中文字符'}]">
-								<el-tooltip content="必填,2~5个中文字符" placement="right">
-									<el-input v-model="editForm.name"></el-input>
-								</el-tooltip>
-							</el-form-item>
-							<el-form-item label="年龄" prop="age">
-								<el-tooltip content="为0显示保密" placement="right">
-									<el-input-number v-model="editForm.age" :min="0" size="small"></el-input-number>
-								</el-tooltip>
-							</el-form-item>
-							<el-form-item label="职业" prop="job">
-								<el-input v-model="editForm.job"></el-input>
-							</el-form-item>
-							<el-form-item label="email" prop="email" :rules="[{ required: true, message: '请输入邮箱' },{ type: 'email', message: '请正确输入邮箱'}]">
-								<el-input v-model="editForm.email"></el-input>
-							</el-form-item>
-							<el-form-item>
-								<el-button type="primary" @click="submitForm">确认</el-button>
-								<el-button @click="tabEdit">返回</el-button>
-							</el-form-item>
-						</el-form> -->
 					</el-col>
 				</el-row>
 			</el-dialog>

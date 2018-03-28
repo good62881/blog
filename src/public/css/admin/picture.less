@@ -17,20 +17,37 @@
 		.el-scrollbar__wrap{ overflow-x:hidden; overflow-y:auto;}
 		.el-row{width: 760px;}
 	}
+	&_show{
+		.el-row{margin: -60px -20px -30px;}
+		.el-dialog__headerbtn{
+			width: 30px; height: 30px; top: -15px; right: -15px; z-index: 1;  border: 3px solid #fff; border-radius: 50px; background-color: #aaa;
+			.el-dialog__close{color: #fff;}
+		}
+		&_box{ background-color: #000; padding-bottom: 10px;}
+		&_info{
+			padding: 20px;
+			small{ color: #ccc;}
+			li{
+				margin-bottom: 10px;
+				&:first-child{ padding-bottom: 10px; border-bottom:1px solid #D5D5D5; box-shadow:0 1px 1px rgba(0,0,0,.1);}
+			}
+		}
+	}
 	&_swiper{
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 		.swiper-slide{
-			line-height: 500px; text-align: center;
-			img{ max-width: 100%; max-height: 500px;}
+			line-height: 600px; text-align: center;
+			img{ max-width: 100%; max-height: 600px;}
 		}
 	}
 	&_previewSwiper{
+		padding: 0 50px;
 		.swiper-slide{
-			line-height: 80px; width: 80px; text-align: center; background-color: #ccc;
-			img{ max-width: 80px; max-height: 80px;}
+			line-height: 50px; width: 50px; text-align: center; background-color: #ccc; cursor: pointer;
+			img{ max-width: 50px; max-height: 50px;}
 			&:after{ content: ""; position: absolute; top: 0; left: 0; bottom: 0; right: 0; margin: auto; background-color: rgba(0,0,0,.5);}
 		}
-		.swiper-slide-active:after{ background-color:transparent;}
+		.swiper-slide-active:after{ background-color:transparent; border:5px solid #73B4E0}
 		
 	}
 	.el-card{

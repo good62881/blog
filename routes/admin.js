@@ -102,8 +102,8 @@ app.post('/adminApi/setPictureListCover',picture.setPictureListCover);
 app.post('/adminApi/moveToPicturelist',picture.moveToPicturelist);
 app.post('/adminApi/getPicture',picture.getPicture);
 app.post('/adminApi/pictureUpload',picture.pictureUpload);
+app.post('/adminApi/editPictureInfo',picture.editPictureInfo);
 app.post('/adminApi/delPicture',picture.delPicture);
-
 
 
 

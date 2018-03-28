@@ -35,24 +35,35 @@ var app = new Vue({
 		moveVisible: false,
 		showVisible: false,
 		swiperOpt: {
+			slidesPerView: 1,
 			navigation: {
 				nextEl: '.swiper-button-next',
 				prevEl: '.swiper-button-prev',
 			},
 			on: {
-				slideChange: function() {
-					app.swiperIndex=this.activeIndex
+				slideChange: function() {   //奇怪的BUG，swiper的双向控制写在$nextTick中，会造成其他弹窗打开时页面卡死。
+					app.swiperIndex=this.activeIndex;
+					app.editSwiperTab=false;
+					app.previewSwiper.slideTo(this.activeIndex)
 				},
 			},
 		},
 		previewSwiperOpt: {
+			allowTouchMove:false,
 			centeredSlides: true,
 			slideToClickedSlide: true,
 			slidesPerView: 'auto',
-			spaceBetween: 20,
+			spaceBetween: 10,
+			on: {
+				slideChange: function() {
+					app.editSwiperTab=false;
+					app.swiper.slideTo(this.activeIndex)
+				},
+			},
 		},
 		swiperIndex: 0,
-		editSwiperInfo:false
+		pictureInfoCopy:'',
+		editSwiperTab:false,
 	},
 	components: {
 		CNav: CNav,
@@ -78,7 +89,7 @@ var app = new Vue({
 		previewSwiper: function() {
 			return this.$refs.previewSwiper.swiper
 		},
-		swiperInfo:function() {
+		pictureInfo:function() {
 			return this.list[this.swiperIndex]?this.list[this.swiperIndex]:''
 		}
 	},
@@ -274,12 +285,34 @@ var app = new Vue({
 			that.$nextTick(function() {
 				that.swiper.update();
 				that.previewSwiper.update();
-				that.swiper.controller.control = that.previewSwiper;
-				that.previewSwiper.controller.control = that.swiper;
+				// that.swiper.controller.control = that.previewSwiper;
+				// that.previewSwiper.controller.control = that.swiper;
 				that.swiper.slideTo(that.swiperIndex)
 			});
 		},
 
+		//编辑图片信息
+		editPictureInfo:function() {
+			this.pictureInfoCopy=JSON.parse(JSON.stringify(this.pictureInfo));
+			this.editSwiperTab=true;
+
+		},
+		submitPictureInfo:function() {
+			var that = this;
+			that.$refs['pictureInfoCopy'].validate(function(valid) {
+				if (valid) {
+					$.post("/adminApi/editPictureInfo",that.pictureInfoCopy,function(res){
+						if (!res.code) {
+							that.getList();
+							that.editSwiperTab=false;
+							that.$message.success('修改成功！');
+						} else {
+							that.$message.error(res.msg);
+						}
+					});
+				}
+			});
+		}
 
 	}
 });

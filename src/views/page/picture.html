@@ -34,7 +34,7 @@
 						<div class="picture_info">
 							{{pictureInfo.name}}&nbsp;
 							<small>{{ new Date(pictureInfo.date).toLocaleDateString() }}</small>&nbsp;
-							<template v-if="pictureInfo.formId">源自文章：<a target="_blank" :href="'/articleDetail?id='+pictureInfo.formId">{{pictureInfo.name}}</a></template>
+							<template v-if="pictureInfo.formId">源自文章：<a :href="'/articleDetail?id='+pictureInfo.formId">{{pictureInfo.name}}</a></template>
 							<template v-else>{{pictureInfo.des}}</template>
 						</div>
 					</div>

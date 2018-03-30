@@ -5,7 +5,7 @@
 		<ul class="fix">
 			<li><a href="/">文章</a></li>
 			<li><a href="/code">代码</a></li>
-			<li><a href="/picture">照片</a></li>
+			<li><a href="/picture">图片</a></li>
 			<!-- <li><a href="">实例</a></li>
 			<li><a href="">留言</a></li> -->
 			<li><a href="/articleDetail?id=5abde7b8da4d1b05ccf1c881">关于</a></li>

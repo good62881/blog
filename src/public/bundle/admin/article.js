@@ -199,6 +199,7 @@ var articleEdit = Vue.extend({
 							}, {
 								'script': 'super'
 							}],
+							[{ 'align': [] }],
 							[{
 								'color': []
 							}, {

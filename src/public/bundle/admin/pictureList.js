@@ -3,9 +3,11 @@ import '../../css/admin/pictureList.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 
 //公共
@@ -46,13 +48,13 @@ var app = new Vue({
 			that.$refs['addForm'].validate(function(valid) {
 				if (valid) {
 					that.isSubmit = true
-					$.post('/adminApi/editPictureList', that.addForm, function(res) {
-						if (!res.code) {
+					that.$http.post('/adminApi/editPictureList', that.addForm).then(function(res) {
+						if (!res.body.code) {
 							that.$message.success('新建成功！');
 							that.isAdd=false;
 							that.search();
 						} else {
-							that.$message.error(res.msg);
+							that.$message.error(res.body.msg);
 						}
 						that.isSubmit = false;
 					});
@@ -62,14 +64,14 @@ var app = new Vue({
 		search:function() {
 			//获取相册列表
 			var that = this;
-			$.post("/adminApi/getPictureList",function(res){
-				if (!res.code) {
-					res.data.forEach(function(v,i,a) {
+			that.$http.post("/adminApi/getPictureList").then(function(res){
+				if (!res.body.code) {
+					res.body.data.forEach(function(v,i,a) {
 						a[i].isEdit=false
 					})
-					that.list=res.data;
+					that.list=res.body.data;
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
@@ -99,15 +101,15 @@ var app = new Vue({
 		},
 		togglePictureList: function(id, visible) {
 			var that = this;
-			$.post("/adminApi/togglePictureList", {
+			that.$http.post("/adminApi/togglePictureList", {
 				id: id,
 				visible: visible
-			}, function(res) {
-				if (!res.code) {
+			}).then(function(res) {
+				if (!res.body.code) {
 					that.search();
 					that.$message.success('操作成功！');
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
@@ -115,12 +117,12 @@ var app = new Vue({
 			var that = this;
 			that.$refs['editCopy'][0].validate(function(valid) {
 				if (valid) {
-					$.post("/adminApi/editPictureList",that.editCopy, function(res) {
-						if (!res.code) {
+					that.$http.post("/adminApi/editPictureList",that.editCopy).then(function(res) {
+						if (!res.body.code) {
 							that.search();
 							that.$message.success('操作成功！');
 						} else {
-							that.$message.error(res.msg);
+							that.$message.error(res.body.msg);
 						}
 					});
 				}
@@ -128,12 +130,12 @@ var app = new Vue({
 		},
 		delPictureList: function(id) {
 			var that = this;
-			$.post("/adminApi/delPictureList",{id:id}, function(res) {
-				if (!res.code) {
+			that.$http.post("/adminApi/delPictureList",{id:id}).then(function(res) {
+				if (!res.body.code) {
 					that.search();
 					that.$message.success('删除成功！');
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
@@ -141,33 +143,33 @@ var app = new Vue({
 		//封面操作
 		getCoverList:function(id) {
 			var that = this;
-			$.post("/adminApi/getPicture", {
+			that.$http.post("/adminApi/getPicture", {
 				id: id
-			}, function(res) {
-				if (!res.code) {
-					if (res.data[0]) {
-						that.coverList = res.data;
+			}).then(function(res) {
+				if (!res.body.code) {
+					if (res.body.data[0]) {
+						that.coverList = res.body.data;
 						that.coverDialogVisible=true
 					}else{
 						that.$message.error('相册内暂无图片！');
 					}
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
 		setPictureListCover: function(id, src) {
 			var that = this;
-			$.post("/adminApi/setPictureListCover", {
+			that.$http.post("/adminApi/setPictureListCover", {
 				id: id,
 				src: src
-			}, function(res) {
-				if (!res.code) {
+			}).then(function(res) {
+				if (!res.body.code) {
 					that.search();
 					that.coverDialogVisible=false;
 					that.$message.success('设置成功！');
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},

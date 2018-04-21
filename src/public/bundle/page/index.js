@@ -3,9 +3,11 @@ import '../../css/page/index.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 
 //公共
@@ -29,14 +31,28 @@ var app = new Vue({
 	},
 	directives: {
 		cutHtml: function(el, binding) {
-			$(el).empty();
-			var _img = $(binding.value).find('img').first();
-			if (_img[0]) {
-				$(el).append($('<div class="article_img"></div>').append(_img))
-			}
-			var _p = $(binding.value).filter(':not(:has(img))').slice(0, 3)
-			$(el).append(_p);
+			el.innerHTML = '';   //先清空
+			var _dom = document.createElement('div');
+			_dom.innerHTML = binding.value;
+			//取第一张图
+			var _imgList = _dom.querySelectorAll('img');
 
+			for (var i = 0; i < _imgList.length; i++) {
+				if (i == 0) {
+					var _img=document.createElement('div');
+					_img.setAttribute('class','article_img'); 
+					_img.appendChild(_imgList[i])
+					el.appendChild(_img)
+				}else{
+					_imgList[i].parentNode.removeChild(_imgList[i]);
+				}
+			};
+			//取前三个DOM元素
+			for (let i = 0; i < 3; i++) {
+				let _in=_dom.querySelectorAll(':not(:empty)')[i];
+				_in && el.appendChild(_in.cloneNode(true))
+			};
+			//代码高亮
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {
 				hljs.highlightBlock(block)
@@ -55,11 +71,11 @@ var app = new Vue({
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};
-			$.post("/Api/getArticleList", _data, function(res) {
-				if (!res.code) {
-					that.articleList = res.data
+			that.$http.post("/Api/getArticleList", _data).then(function(res) {
+				if (!res.body.code) {
+					that.articleList = res.body.data
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},

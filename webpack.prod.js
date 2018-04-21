@@ -33,11 +33,7 @@ var pluginsConfig=[
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'common',
 		filename: 'bundle/[name].js',
-		minChunks:3
-	}),
-	new webpack.ProvidePlugin({  
-		$: 'jquery',
-		jQuery: 'jquery'
+		minChunks:7
 	})
 ];
 pageArr.forEach((page) => {  

@@ -3,9 +3,11 @@ import '../../css/page/articleDetail.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 
 //公共
@@ -35,8 +37,7 @@ var app = new Vue({
 		CRight: CRight
 	},
 	directives: {
-		cutHtml: function(el, binding) {
-			$(el).append(binding.value);
+		cutHtml: function(el) {
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {
 				hljs.highlightBlock(block)
@@ -47,11 +48,11 @@ var app = new Vue({
 		//获取文章详情
 		var that = this;
 		if (params.id) {
-			$.post("/Api/getArticleDetail", {id:params.id}, function(res) {
-				if (!res.code) {
-					that.detail = res.data
+			that.$http.post("/Api/getArticleDetail", {id:params.id}).then(function(res) {
+				if (!res.body.code) {
+					that.detail = res.body.data
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		}

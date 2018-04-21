@@ -3,10 +3,12 @@ import '../../css/admin/edit.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router';
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 Vue.use(VueRouter)
 
@@ -43,13 +45,13 @@ var editInfo = Vue.extend({
 			var that = this;
 			that.$refs['editForm'].validate(function(valid) {
 				if (valid) {
-					$.post("/adminApi/editInfo",that.editForm,function(res){
-						if (!res.code) {
+					that.$http.post("/adminApi/editInfo",that.editForm).then(function(res){
+						if (!res.body.code) {
 							app.$refs.CTop.getInfo();
 							that.tabEdit();
 							that.$message.success('修改成功！');
 						} else {
-							that.$message.error(res.msg);
+							that.$message.error(res.body.msg);
 						}
 					});
 				}
@@ -109,8 +111,8 @@ var editPass = Vue.extend({
 			that.onEdit=true;
 			that.$refs['editPass'].validate(function(valid) {
 				if (valid) {
-					$.post("/adminApi/editPass",that.editPass,function(res){
-						if (!res.code) {
+					that.$http.post("/adminApi/editPass",that.editPass).then(function(res){
+						if (!res.body.code) {
 							that.$message({
 								message: '修改成功,请用新密码重新登录！',
 								type: 'success',
@@ -121,7 +123,7 @@ var editPass = Vue.extend({
 							});
 						} else {
 							that.onEdit=false;
-							that.$message.error(res.msg);
+							that.$message.error(res.body.msg);
 						}
 					});
 				}

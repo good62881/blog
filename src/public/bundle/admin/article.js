@@ -3,6 +3,7 @@ import '../../css/admin/article.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router';
@@ -15,7 +16,7 @@ import 'quill/dist/quill.bubble.css'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
 
-
+Vue.use(Resource);
 Vue.use(ElementUI);
 Vue.use(VueRouter)
 Vue.use(VueQuillEditor)
@@ -62,11 +63,11 @@ var articleList = Vue.extend({
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};
-			$.post("/adminApi/getArticleList", _data, function(res) {
-				if (!res.code) {
-					that.tableData = res.data
+			that.$http.post("/adminApi/getArticleList", _data).then(function(res) {
+				if (!res.body.code) {
+					that.tableData = res.body.data
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 				that.loading = false;
 			});
@@ -100,7 +101,9 @@ var articleList = Vue.extend({
 		},
 		//批量操作
 		selectionOpt: function(a) {
+
 			var that = this;
+			if (!that.tableSelect[0]) {return}
 			if (a == 1) {
 				that.toggleArticle(that.tableSelect, !that.tableSelect[0].visible)
 			} else if (a == 2) {
@@ -125,15 +128,15 @@ var articleList = Vue.extend({
 			var _id = (typeof id == 'string') ? [id] : id.map(function(x) {
 				return x._id
 			});
-			$.post("/adminApi/toggleArticle", {
+			that.$http.post("/adminApi/toggleArticle", {
 				id: _id,
 				visible: visible
-			}, function(res) {
-				if (!res.code) {
+			}).then(function(res) {
+				if (!res.body.code) {
 					that.search();
 					that.$message.success('操作成功！');
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
@@ -142,15 +145,15 @@ var articleList = Vue.extend({
 			var _id = (typeof id == 'string') ? [id] : id.map(function(x) {
 				return x._id
 			});
-			$.post("/adminApi/delArticle", {
+			that.$http.post("/adminApi/delArticle", {
 				id: _id
-			}, function(res) {
-				if (!res.code) {
+			}).then(function(res) {
+				if (!res.body.code) {
 					that.search();
 					that.$message.success('删除成功！');
 					document.body.click()
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},
@@ -232,13 +235,13 @@ var articleEdit = Vue.extend({
 		//是否编辑
 		var that = this;
 		if (that.$route.params.id) {
-			$.post("/adminApi/getArticle", {
+			that.$http.post("/adminApi/getArticle", {
 				id: that.$route.params.id
-			}, function(res) {
-				if (!res.code) {
-					that.form = res.data
+			}).then(function(res) {
+				if (!res.body.code) {
+					that.form = res.body.data
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		}
@@ -281,8 +284,8 @@ var articleEdit = Vue.extend({
 			that.$refs['form'].validate(function(valid) {
 				if (valid) {
 					that.isSubmit = true
-					$.post('/adminApi/updateArticle', that.form, function(res) {
-						if (!res.code) {
+					that.$http.post('/adminApi/updateArticle', that.form).then(function(res) {
+						if (!res.body.code) {
 							that.$message({
 								message: '发布成功！',
 								type: 'success',
@@ -293,7 +296,7 @@ var articleEdit = Vue.extend({
 							});
 						} else {
 							that.isSubmit = false;
-							that.$message.error(res.msg);
+							that.$message.error(res.body.msg);
 						}
 					});
 				}

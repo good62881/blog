@@ -3,9 +3,11 @@ import '../../css/admin/index.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 
 //公共
@@ -29,11 +31,11 @@ var app=new Vue({
 	created: function() {
 		//文章统计
 		var that=this;
-		$.post("/adminApi/getArticleNum", function(res) {
-			if (!res.code) {
-				that.num=res.data
+		that.$http.post("/adminApi/getArticleNum").then(function(res) {
+			if (!res.body.code) {
+				that.num=res.body.data
 			} else {
-				that.$message.error(res.msg);
+				that.$message.error(res.body.msg);
 			}
 		});
 	},

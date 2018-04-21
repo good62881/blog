@@ -3,9 +3,11 @@ import '../../css/page/code.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 
 //公共
@@ -29,10 +31,11 @@ var app = new Vue({
 	},
 	directives: {
 		highlight: function(el, binding) {
-			$(el).empty();
-			
-			var _p = $(binding.value).filter('pre').first()
-			$(el).append(_p);
+			el.innerHTML = '';
+
+			var _dom = document.createElement('div');
+			_dom.innerHTML = binding.value;
+			el.appendChild(_dom.querySelectorAll('pre')[0]);
 
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {
@@ -52,11 +55,11 @@ var app = new Vue({
 				pageNo: that.pageNo,
 				pageSize: that.pageSize,
 			};
-			$.post("/Api/getArticleList", _data, function(res) {
-				if (!res.code) {
-					that.codeList = res.data
+			that.$http.post("/Api/getArticleList", _data).then(function(res) {
+				if (!res.body.code) {
+					that.codeList = res.body.data
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},

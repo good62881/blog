@@ -33,12 +33,12 @@ export default {
 		//获取用户信息
 		getInfo:function() {
 			var that=this;
-			$.post("/adminApi/getInfo",function(res){
-				if (res.code != 0) {
-					that.$message.error(res.message);
+			that.$http.post("/adminApi/getInfo").then(function(res){
+				if (res.body.code != 0) {
+					that.$message.error(res.body.message);
 				} else {
-					that.info = res.data;
-					that.$emit('update:userInfo', res.data)
+					that.info = res.body.data;
+					that.$emit('update:userInfo', res.body.data)
 				}
 			});
 		}

@@ -81,11 +81,11 @@ export default {
 	created: function() {
 		var that=this;
 		//获取个人信息
-		$.post("/Api/getInfo",function(res){
-			if (!res.code) {
-				that.count=res.data
+		that.$http.post("/Api/getInfo").then(function(res){
+			if (!res.body.code) {
+				that.count=res.body.data
 			} else {
-				that.$message.error(res.msg);
+				that.$message.error(res.body.msg);
 			}
 		});
 	},

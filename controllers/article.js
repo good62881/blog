@@ -297,10 +297,11 @@ exports.getArticleNum = function(req, res) {
 	var _code = Article.count({
 		class: 2
 	}).exec()
-
-	Promise.all([_article, _code]).then(function(results) {
+	var _img = Picture.count().exec();
+	Promise.all([_article,_code,_img]).then(function(results) {
 		cb.data.articleNum = results[0];
 		cb.data.codeNum = results[1];
+		cb.data.imgNum = results[2];
 		cb.code = 0;
 		res.send(cb);
 	}, function(err) {

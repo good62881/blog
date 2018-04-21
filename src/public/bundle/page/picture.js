@@ -3,11 +3,13 @@ import '../../css/page/picture.less';
 
 //vue相关
 import Vue from 'vue';
+import Resource from 'vue-resource';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 
+Vue.use(Resource);
 Vue.use(ElementUI);
 Vue.use(VueAwesomeSwiper)
 
@@ -66,11 +68,11 @@ var app = new Vue({
 	created: function() {
 		//获取相册列表
 		var that = this;
-		$.post("/Api/getPictureList", function(res) {
-			if (!res.code) {
-				that.pictureList = res.data;
+		that.$http.post("/Api/getPictureList").then(function(res) {
+			if (!res.body.code) {
+				that.pictureList = res.body.data;
 			} else {
-				that.$message.error(res.msg);
+				that.$message.error(res.body.msg);
 			}
 		});
 	},
@@ -78,18 +80,18 @@ var app = new Vue({
 		//展示图片
 		showPicture:function(id) {
 			var that = this;
-			$.post("/Api/getPicture", {
+			that.$http.post("/Api/getPicture", {
 				id: id
-			}, function(res) {
-				if (!res.code) {
-					if (res.data[0]) {
-						that.list = res.data;
+			}).then(function(res) {
+				if (!res.body.code) {
+					if (res.body.data[0]) {
+						that.list = res.body.data;
 						that.showVisible=true;
 					}else{
 						that.$message.error('相册内暂无图片！');
 					}
 				} else {
-					that.$message.error(res.msg);
+					that.$message.error(res.body.msg);
 				}
 			});
 		},

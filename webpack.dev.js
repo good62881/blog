@@ -25,13 +25,9 @@ var pluginsConfig=[
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'common',
 		filename: 'bundle/[name].js',
-		minChunks:3 
+		minChunks:7 
 	}),
-	new HtmlWebpackHarddiskPlugin(),
-	new webpack.ProvidePlugin({  
-		$: 'jquery',
-		jQuery: 'jquery'
-	})
+	new HtmlWebpackHarddiskPlugin()
 ];
 pageArr.forEach((page) => {  
 	const htmlPlugin = new HtmlWebpackPlugin({

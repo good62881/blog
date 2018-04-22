@@ -13,8 +13,11 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+
+//代码高亮
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
+
 
 Vue.use(Resource);
 Vue.use(ElementUI);

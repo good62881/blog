@@ -36,8 +36,7 @@ var app = new Vue({
 			_dom.innerHTML = binding.value;
 			//取第一张图
 			var _imgList = _dom.querySelectorAll('img');
-
-			for (var i = 0; i < _imgList.length; i++) {
+			for (let i = 0; i < _imgList.length; i++) {
 				if (i == 0) {
 					var _img=document.createElement('div');
 					_img.setAttribute('class','article_img'); 
@@ -47,11 +46,17 @@ var app = new Vue({
 					_imgList[i].parentNode.removeChild(_imgList[i]);
 				}
 			};
+
 			//取前三个DOM元素
+			var _pList=[]
+			for (let i = 0; i < _dom.childNodes.length; i++) {
+				_dom.childNodes[i].textContent && _pList.push(_dom.childNodes[i])
+			};
 			for (let i = 0; i < 3; i++) {
-				let _in=_dom.querySelectorAll(':not(:empty)')[i];
+				let _in=_pList[i];
 				_in && el.appendChild(_in.cloneNode(true))
 			};
+
 			//代码高亮
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {

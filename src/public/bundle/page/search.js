@@ -40,13 +40,12 @@ var app = new Vue({
 	},
 	directives: {
 		cutHtml: function(el, binding) {
-			el.innerHTML = '';
+			el.innerHTML = '';   
 			var _dom = document.createElement('div');
 			_dom.innerHTML = binding.value;
-			
-			var _imgList = _dom.querySelectorAll('img');
 
-			for (var i = 0; i < _imgList.length; i++) {
+			var _imgList = _dom.querySelectorAll('img');
+			for (let i = 0; i < _imgList.length; i++) {
 				if (i == 0) {
 					var _img=document.createElement('div');
 					_img.setAttribute('class','article_img'); 
@@ -56,12 +55,18 @@ var app = new Vue({
 					_imgList[i].parentNode.removeChild(_imgList[i]);
 				}
 			};
-			
+
+
+			var _pList=[]
+			for (let i = 0; i < _dom.childNodes.length; i++) {
+				_dom.childNodes[i].textContent && _pList.push(_dom.childNodes[i])
+			};
 			for (let i = 0; i < 3; i++) {
-				let _in=_dom.querySelectorAll(':not(:empty)')[i];
+				let _in=_pList[i];
 				_in && el.appendChild(_in.cloneNode(true))
 			};
-			
+
+
 			var _blocks = el.querySelectorAll('pre');
 			_blocks.forEach(function(block) {
 				hljs.highlightBlock(block)

@@ -11,18 +11,7 @@
 	<c-top></c-top>
 	<div class="main fix">
 		<c-right></c-right>
-		<div class="con">
-			<div v-for="item in articleList.list" class="list">
-				<h1 class="title"><a :href="'articleDetail?id='+item._id">{{item.name}}</a></h1>
-				<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
-				<div class="article" v-cut-html="item.content">
-					
-				</div>
-			</div>
-			<div class="tc">
-				<el-pagination background layout="total, prev, pager, next, jumper" :page-size="pageSize" :total="articleList.total" @current-change="goPage"></el-pagination>
-			</div>
-		</div>
+		<router-view></router-view>
 	</div>
 </div>
 	

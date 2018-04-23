@@ -8,7 +8,7 @@
 		<p>文章<br>{{count.count.article}}</p><p>代码<br>{{count.count.code}}</p><p>图片<br>{{count.count.img}}</p>
 	</div>
 	<div class="right_search">
-		<el-input v-model="search.val" placeholder="请输入搜索内容"  @keyup.enter.native="submit" size="mini">
+		<el-input v-model="search.val" placeholder="请输入搜索内容" @keyup.enter.native="submit" size="mini">
 			<el-select v-model="search.type" slot="prepend">
 				<el-option label="标题" value="name"></el-option>
 				<el-option label="标签" value="tags"></el-option>
@@ -27,37 +27,35 @@
 	<dl class="right_list right_tag">
 		<dt>标签云</dt>
 		<dd>
-			<a v-for="item in count.tags" :href="'search?type=tags&val='+item">{{item}}</a>
+			<router-link v-for="item in count.tags" :to="{ name: 'search', query: { type: 'tags',val: item }}">{{item}}</router-link>
 		</dd>
 	</dl>
 	<dl class="right_list">
-		<dt><a href="/">更多</a>最新文章</dt>
+		<dt><router-link to="/">更多</router-link>最新文章</dt>
 		<dd v-for="item in count.newArticle">
 			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
-			<a :href="'articleDetail?id='+item._id">{{item.name}}</a>
+			<router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link>
 		</dd>
 	</dl>
 	<dl class="right_list">
-		<dt><a href="/code">更多</a>最新代码</dt>
+		<dt><router-link to="/code">更多</router-link>最新代码</dt>
 		<dd v-for="item in count.newCode">
 			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
-			<a :href="'articleDetail?id='+item._id">{{item.name}}</a>
+			<router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link>
 		</dd>
 	</dl>
-	<!-- <dl class="right_list">
-		<dt><a href="#">更多</a>热门文章</dt>
-		<dd><span>120评论</span><a href="">哈哈哈哈哈哈哈</a></dd>
-		<dd><span>2评论</span><a href="">哈哈哈哈</a></dd>
-		<dd><span>30评论</span><a href="">哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>11评论</span><a href="">哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</a></dd>
-		<dd><span>200评论</span><a href="">哈哈哈哈哈</a></dd>
-	</dl> -->
 </div>
 </template>
 
 <script>
-import CCalendar from './calendar.vue';
+import Vue from 'vue';
+import { Input,Select,Option, } from 'element-ui';
+Vue.use(Input);
+Vue.use(Select);
+Vue.use(Option);
 
+//日历
+import CCalendar from './calendar.vue';
 
 export default {
 	data: function () {
@@ -93,13 +91,13 @@ export default {
 		cbDate:function(d) {
 			var _date=d.toString().split('/');
 			if(_date.length==3){
-				location = '/search?date='+d
+				this.$router.push({ name: 'search', query: { date: d }})
 			}
 			
 		},
 		submit:function() {
 			if (this.search.type && this.search.val) {
-				location = '/search?type='+this.search.type+'&val='+this.search.val
+				this.$router.push({ name: 'search', query: { type: this.search.type, val: this.search.val}})
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 <template>
 <div class="con">
 	<div v-for="item in codeList.list" class="list">
-		<h1 class="title"><a :href="'articleDetail?id='+item._id">{{item.name}}</a></h1>
+		<h1 class="title"><router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link></h1>
 		<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
 		<div class="code" v-highlight="item.content">
 			
@@ -14,6 +14,10 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import { Pagination } from 'element-ui';
+Vue.use(Pagination)
+
 //代码高亮
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'

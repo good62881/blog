@@ -4,12 +4,9 @@ import '../../css/index.less';
 //vue相关
 import Vue from 'vue';
 import Resource from 'vue-resource';
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
 import VueRouter from 'vue-router';
 
 Vue.use(Resource);
-Vue.use(ElementUI);
 Vue.use(VueRouter)
 
 
@@ -18,11 +15,11 @@ import CTop from '../../../views/page/top.vue';
 import CRight from '../../../views/page/right.vue';
 
 //主体
-import article from '../../../views/page/article.vue';
-import code from '../../../views/page/code.vue';
-import search from '../../../views/page/search.vue';
-import articleDetail from '../../../views/page/articleDetail.vue';
-import picture from '../../../views/page/picture.vue';
+const article = () => import('../../../views/page/article.vue')
+const code = () => import('../../../views/page/code.vue')
+const search = () => import('../../../views/page/search.vue')
+const articleDetail = () => import('../../../views/page/articleDetail.vue')
+const picture = () => import('../../../views/page/picture.vue')
 
 
 var app = new Vue({
@@ -33,7 +30,7 @@ var app = new Vue({
 	},
 	router: new VueRouter({
 		routes: [{
-			path: '/article',
+			path: '/',
 			name: 'article',
 			component: article,
 		},{
@@ -45,20 +42,16 @@ var app = new Vue({
 			name: 'search',
 			component: search,
 		},{
-			path: '/articleDetail',
+			path: '/articleDetail/:id',
 			name: 'articleDetail',
 			component: articleDetail,
-			children: [{
-				path: ':id',
-				component: articleDetail
-			}]
 		},{
 			path: '/picture',
 			name: 'picture',
 			component: picture,
 		},{
 			path: '*',
-			redirect: '/article'
+			redirect: '/'
 		}]
 	})
 });

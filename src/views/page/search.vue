@@ -12,17 +12,17 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item>
-			<el-input placeholder="请输入搜索内容" v-model="searchForm.val">
+			<el-input placeholder="请输入搜索内容" v-model="searchForm.val" @keyup.enter.native="search">
 				<el-select v-model="searchForm.type" slot="prepend">
 					<el-option label="标题" value="name"></el-option>
 					<el-option label="标签" value="tags"></el-option>
 				</el-select>
-				<el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+				<i slot="suffix" class="el-input__icon el-icon-search" @click="search"></i>
 			</el-input>
 		</el-form-item>
 	</el-form>
 	<div v-for="item in articleList.list" class="list">
-		<h1 class="title"><a :href="'articleDetail?id='+item._id">{{item.name}}</a></h1>
+		<h1 class="title"><router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link></h1>
 		<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
 		<div class="article" v-cut-html="item.content">
 			
@@ -35,6 +35,16 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import { Form,FormItem,DatePicker,Input,Select,Option,Pagination } from 'element-ui';
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(DatePicker);
+Vue.use(Input);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Pagination);
+
 //代码高亮
 import hljs from 'highlight.js'
 import 'highlight.js/styles/monokai-sublime.css'
@@ -46,10 +56,10 @@ export default {
 			pageNo: 1,
 			pageSize: 10,
 			searchForm:{
-				date:this.$route.query.date?[new Date(this.$route.query.date),new Date(this.$route.query.date.split('/')[0],this.$route.query.date.split('/')[1]-1,this.$route.query.date.split('/')[2],23,59,59)]:'',
+				date:'',
 				class:'',
-				type: this.$route.query.type?this.$route.query.type:'name',
-				val: this.$route.query.val?decodeURIComponent(this.$route.query.val):'',
+				type:'name',
+				val:'',
 			},
 			articleList: ''
 		}
@@ -90,9 +100,23 @@ export default {
 		}
 	},
 	created: function() {
+		this.getQuery();
 		this.search()
 	},
+	watch: {
+		'$route': function() {
+			this.getQuery();
+			this.search()
+		}
+	},
 	methods: {
+		//获取查询字段
+		getQuery:function() {
+			this.searchForm.date=this.$route.query.date?[new Date(this.$route.query.date),new Date(this.$route.query.date.split('/')[0],this.$route.query.date.split('/')[1]-1,this.$route.query.date.split('/')[2],23,59,59)]:'';
+			this.searchForm.class='';
+			this.searchForm.type=this.$route.query.type?this.$route.query.type:'name';
+			this.searchForm.val=this.$route.query.val?decodeURIComponent(this.$route.query.val):'';
+		},
 		//获取文章列表
 		search: function() {
 			var that = this;

@@ -3,12 +3,10 @@
 <div class="top fix">
 	<div class="nav">
 		<ul class="fix">
-			<li><a href="/">文章</a></li>
-			<li><a href="/code">代码</a></li>
-			<li><a href="/picture">图片</a></li>
-			<!-- <li><a href="">实例</a></li>
-			<li><a href="">留言</a></li> -->
-			<li><a href="/articleDetail?id=5abde7b8da4d1b05ccf1c881">关于</a></li>
+			<li><router-link to="/">文章</router-link></li>
+			<li><router-link to="/code">代码</router-link></li>
+			<li><router-link to="/picture">图片</router-link></li>
+			<li><router-link :to="{ name: 'articleDetail', params: { id: '5abde7b8da4d1b05ccf1c881' }}">关于</router-link></li>
 		</ul>
 	</div>
 </div>

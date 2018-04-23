@@ -35,10 +35,16 @@ export default {
 			});
 		}
 	},
+	watch: {
+		'$route': 'getDetail'
+	},
 	created: function() {
+		this.getDetail()
+	},
+	methods:{
 		//获取文章详情
-		var that = this;
-		if (that.$route.params.id) {
+		getDetail:function() {
+			var that = this;
 			that.$http.post("/Api/getArticleDetail", {id:that.$route.params.id}).then(function(res) {
 				if (!res.body.code) {
 					that.detail = res.body.data
@@ -47,7 +53,6 @@ export default {
 				}
 			});
 		}
-		
 	},
 }
 </script>

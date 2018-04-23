@@ -24,7 +24,7 @@
 				<div class="picture_info">
 					{{pictureInfo.name}}&nbsp;
 					<small>{{ new Date(pictureInfo.date).toLocaleDateString() }}</small>&nbsp;
-					<template v-if="pictureInfo.formId">源自文章：<a :href="'/articleDetail?id='+pictureInfo.formId">{{pictureInfo.name}}</a></template>
+					<template v-if="pictureInfo.formId">源自文章：<router-link :to="{ name: 'articleDetail', params: { id: pictureInfo.formId }}">{{pictureInfo.name}}</router-link></template>
 					<template v-else>{{pictureInfo.des}}</template>
 				</div>
 			</div>
@@ -44,6 +44,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import { Row,Col,Card,Dialog} from 'element-ui';
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Card);
+Vue.use(Dialog);
+
 //swiper滚动
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
@@ -150,7 +157,7 @@ export default {
 	}
 	&_show{
 		&_box{background-color: #000;margin: -60px -20px -30px;}
-		.el-dialog__headerbtn{
+		&/deep/ .el-dialog__headerbtn{
 			width: 30px; height: 30px; top: -15px; right: -15px; z-index:2;  border: 3px solid #fff; border-radius: 50px; background-color: #aaa;
 			.el-dialog__close{color: #fff;}
 		}
@@ -176,5 +183,6 @@ export default {
 		small{ color: #aaa;}
 	}
 }
+
 
 </style>

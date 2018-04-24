@@ -11,19 +11,7 @@ app.get('/',function(req,res){
 	res.render('page/index');
 });
 
-//文章列表
-app.get('/article',function(req,res){   
-	res.render('page/article');
-});
-app.get('/code',function(req,res){   
-	res.render('page/code');
-});
-app.get('/search',function(req,res){   
-	res.render('page/search');
-});
-app.get('/articleDetail',function(req,res){   
-	res.render('page/articleDetail');
-});
+//获取文章
 app.post('/Api/getArticleList',page.getArticleList);
 app.post('/Api/getArticleDetail',page.getArticleDetail);
 
@@ -31,10 +19,7 @@ app.post('/Api/getArticleDetail',page.getArticleDetail);
 app.post('/Api/getInfo',page.getInfo);
 
 
-//图片列表
-app.get('/picture',function(req,res){   
-	res.render('page/picture');
-});
+//获取图片
 app.post('/Api/getPictureList',page.getPictureList);
 app.post('/Api/getPicture',page.getPicture);
 

@@ -45,7 +45,10 @@
 
 <script>
 import Vue from 'vue';
-import { Row,Col,Card,Dialog} from 'element-ui';
+import Row from 'element-ui';
+import Col from 'element-ui';
+import Card from 'element-ui';
+import Dialog from 'element-ui';
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Card);

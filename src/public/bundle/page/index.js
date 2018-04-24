@@ -9,7 +9,6 @@ import VueRouter from 'vue-router';
 Vue.use(Resource);
 Vue.use(VueRouter)
 
-
 //公共
 import CTop from '../../../views/page/top.vue';
 import CRight from '../../../views/page/right.vue';

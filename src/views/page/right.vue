@@ -49,7 +49,9 @@
 
 <script>
 import Vue from 'vue';
-import { Input,Select,Option, } from 'element-ui';
+import Input from 'element-ui';
+import Select from 'element-ui';
+import Option from 'element-ui';
 Vue.use(Input);
 Vue.use(Select);
 Vue.use(Option);

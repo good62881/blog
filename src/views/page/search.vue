@@ -36,7 +36,13 @@
 
 <script>
 import Vue from 'vue';
-import { Form,FormItem,DatePicker,Input,Select,Option,Pagination } from 'element-ui';
+import Form from 'element-ui';
+import FormItem from 'element-ui';
+import DatePicker from 'element-ui';
+import Input from 'element-ui';
+import Select from 'element-ui';
+import Option from 'element-ui';
+import Pagination from 'element-ui';
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(DatePicker);

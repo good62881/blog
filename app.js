@@ -2,9 +2,12 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 
+//Gzip压缩
+var compression = require('compression')
+app.use(compression());
+
 //配置静态文件
 app.use(express.static('./out/public'));
-
 
 //配置html后缀以及路径
 app.engine('html', require('ejs').__express);

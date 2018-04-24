@@ -38,10 +38,12 @@ exports.getInfo = function(req, res) {
 	var _imgNum = Picture.count({
 		visible: true
 	}).exec();
+	//获取日历数据
+	var _dateArr = Article.distinct('date');
 	//获取所有tag名称
 	var _tags = Article.distinct('tags');
 
-	Promise.all([_userInfo, _Article, _Code, _imgNum, _tags]).then(function(results) {
+	Promise.all([_userInfo, _Article, _Code, _imgNum,_dateArr,_tags]).then(function(results) {
 		cb.data.userInfo = results[0];
 		cb.data.count = {
 			article: results[1].length,
@@ -50,7 +52,8 @@ exports.getInfo = function(req, res) {
 		};
 		cb.data.newArticle = results[1].slice(0, 5);
 		cb.data.newCode = results[2].slice(0, 5);
-		cb.data.tags = results[4].slice(0, 10);
+		cb.data.dateArr = results[4];
+		cb.data.tags = results[5].slice(0, 10);
 		cb.code = 0;
 		res.send(cb);
 	}, function(err) {
@@ -89,7 +92,7 @@ exports.getArticleList = function(req, res) {
 			};
 		}
 	};
-	Article.find(query,'name date tags content', {
+	Article.find(query,'name date update tags content', {
 		sort: {
 			date: -1
 		}
@@ -117,7 +120,7 @@ exports.getArticleDetail = function(req, res) {
 	if (req.body.id) {
 		Article.findOne({
 			_id: req.body.id
-		},'name date tags content', function(err, data) {
+		},'name date update tags content', function(err, data) {
 			var cb = {
 				code: 1,
 				data: {},

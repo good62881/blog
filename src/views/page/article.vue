@@ -2,7 +2,11 @@
 <div class="con">
 	<div v-for="item in articleList.list" class="list">
 		<h1 class="title"><router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link></h1>
-		<div class="info">发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template></div>
+		<div class="info">
+			发布于：{{new Date(item.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;
+			<template v-if="item.update">更新于：{{new Date(item.update).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;</template>
+			<template v-if="item.tags[0]">标签：{{item.tags.join(',')}}</template>
+		</div>
 		<div class="article" v-cut-html="item.content">
 			
 		</div>

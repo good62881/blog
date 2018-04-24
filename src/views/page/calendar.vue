@@ -127,7 +127,7 @@ export default {
 		},
 		setYear:function(i) {
 			this.year=i;
-			this.cbDate(i);
+			this.cbDate(i+'/'+(this.month+1));
 			this.showYear=false
 		},
 		enterYear:function(e) {

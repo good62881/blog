@@ -2,7 +2,8 @@ var mongoose=require('mongoose');
 var Schema = mongoose.Schema;
 
 var articleSchema = new Schema({
-	date:{type:Date,default:Date.now}, 
+	date:{type:Date,default:Date.now},
+	update:Date,
 	name:{type:String,required:true},  
 	class:{type:Number,required:true},  //文章类别  1--文章  2--代码
 	tags: [], 

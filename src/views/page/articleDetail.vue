@@ -2,7 +2,11 @@
 <div class="con">
 	<div class="list">
 		<h2 class="title">{{detail.name}}</h2>
-		<div class="info">发布于：{{new Date(detail.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;<template v-if="detail.tags[0]">标签：{{detail.tags.join(',')}}</template></div>
+		<div class="info">
+			发布于：{{new Date(detail.date).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;
+			<template v-if="detail.update">更新于：{{new Date(detail.update).toLocaleDateString()}}&nbsp;&nbsp;&nbsp;</template>
+			<template v-if="detail.tags[0]">标签：{{detail.tags.join(',')}}</template>
+		</div>
 		<div v-html="detail.content" v-cut-html class="article">
 			
 		</div>

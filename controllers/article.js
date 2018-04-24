@@ -101,12 +101,15 @@ exports.updateArticle = function(req, res) {
 		_id: _id
 	}, {
 		$set: {
-			date: new Date(),
+			update: new Date(),
 			name: req.body.name,
 			class: req.body.class,
 			tags: req.body.tags ? req.body.tags : [],
 			visible: req.body.visible,
 			content: req.body.content
+		},
+		$setOnInsert: {
+			date: new Date()
 		}
 	}, {
 		upsert: true

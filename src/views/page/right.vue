@@ -23,7 +23,7 @@
 		<dd>职业：{{count.userInfo.job}}</dd>
 		<dd>邮箱：{{count.userInfo.email}}</dd>
 	</dl>
-	<c-calendar :dayData="{'2017/12/6':10,'2017/12/3':20}" :monthData="{'2017/12':120,'2017/2':20}" :yearData="{'2016':12,'2014':20}" @cbDate="cbDate"></c-calendar>
+	<c-calendar :dayData="dayData" :monthData="monthData" :yearData="yearData" @cbDate="cbDate"></c-calendar>
 	<dl class="right_list right_tag">
 		<dt>标签云</dt>
 		<dd>
@@ -68,6 +68,7 @@ export default {
 				newArticle:'',
 				newCode:'',
 				userInfo:'',
+				dateArr:'',
 				tags:''
 			},
 			search:{
@@ -78,6 +79,50 @@ export default {
 	},
 	components: {
 		CCalendar: CCalendar
+	},
+	computed:{
+		dayData:function(){
+			if (!this.count.dateArr) { return ''};
+
+			var _dayData={};
+			for (var i = 0; i < this.count.dateArr.length; i++) {
+				var _dateFilter=new Date(this.count.dateArr[i]).getFullYear() +'/'+ (new Date(this.count.dateArr[i]).getMonth()+1) +'/'+ new Date(this.count.dateArr[i]).getDate();
+				if (_dayData[_dateFilter]) {
+					_dayData[_dateFilter]++
+				}else{
+					_dayData[_dateFilter]=1
+				}
+			}
+			return _dayData
+		},
+		monthData:function(){
+			if (!this.count.dateArr) { return ''};
+
+			var _monthData={};
+			for (var i = 0; i < this.count.dateArr.length; i++) {
+				var _dateFilter=new Date(this.count.dateArr[i]).getFullYear() +'/'+ (new Date(this.count.dateArr[i]).getMonth()+1);
+				if (_monthData[_dateFilter]) {
+					_monthData[_dateFilter]++
+				}else{
+					_monthData[_dateFilter]=1
+				}
+			}
+			return _monthData
+		},
+		yearData:function(){
+			if (!this.count.dateArr) { return ''};
+
+			var _yearData={};
+			for (var i = 0; i < this.count.dateArr.length; i++) {
+				var _dateFilter=new Date(this.count.dateArr[i]).getFullYear();
+				if (_yearData[_dateFilter]) {
+					_yearData[_dateFilter]++
+				}else{
+					_yearData[_dateFilter]=1
+				}
+			}
+			return _yearData
+		}
 	},
 	created: function() {
 		var that=this;

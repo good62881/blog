@@ -78,8 +78,7 @@ module.exports = {
 			use: {
 				loader: 'babel-loader',
 				options: {
-					presets: ['env'],
-					plugins: ['syntax-dynamic-import']
+					presets: ['env']
 				}
 			}
 		}, {

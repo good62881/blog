@@ -1,7 +1,7 @@
 <template>
 <div class="con">
 	<el-row class="picture" :gutter="20">
-		<el-col :span="8" v-for="item in pictureList">
+		<el-col :span="8" v-for="(item,i) in pictureList" :key="i">
 			<el-card :body-style="{ padding: '10px' }">
 				<div class="picture_list" @click="showPicture(item.listId)" :style="item.cover?'background-image:url('+item.cover+')':'background-image:url(/images/noCover.png)'"></div>
 				<p>{{item.name}}</p>
@@ -15,7 +15,7 @@
 		<div class="picture_show_box">
 			<div class="picture_swiper">
 				<swiper :options="swiperOpt" ref="swiper">
-					<swiper-slide v-for="slide in list">
+					<swiper-slide v-for="(slide,i) in list" :key="i">
 						<img :src="slide.src" alt="">
 					</swiper-slide>
 					<div class="swiper-button-prev" slot="button-prev"></div>
@@ -30,7 +30,7 @@
 			</div>
 			<div class="picture_previewSwiper">
 				<swiper :options="previewSwiperOpt" ref="previewSwiper">
-					<swiper-slide v-for="slide in list">
+					<swiper-slide v-for="(slide,i) in list" :key="i">
 						<img :src="slide.src" alt="">
 					</swiper-slide>
 				</swiper>
@@ -45,10 +45,11 @@
 
 <script>
 import Vue from 'vue';
-import Row from 'element-ui';
-import Col from 'element-ui';
-import Card from 'element-ui';
-import Dialog from 'element-ui';
+import {Row,Col,Card,Dialog} from 'element-ui';
+// import Row from 'element-ui';
+// import Col from 'element-ui';
+// import Card from 'element-ui';
+// import Dialog from 'element-ui';
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Card);

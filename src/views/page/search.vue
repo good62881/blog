@@ -36,13 +36,14 @@
 
 <script>
 import Vue from 'vue';
-import Form from 'element-ui';
-import FormItem from 'element-ui';
-import DatePicker from 'element-ui';
-import Input from 'element-ui';
-import Select from 'element-ui';
-import Option from 'element-ui';
-import Pagination from 'element-ui';
+import {Form,FormItem,DatePicker,Input,Select,Option,Pagination} from 'element-ui';
+// import Form from 'element-ui';
+// import FormItem from 'element-ui';
+// import DatePicker from 'element-ui';
+// import Input from 'element-ui';
+// import Select from 'element-ui';
+// import Option from 'element-ui';
+// import Pagination from 'element-ui';
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(DatePicker);
@@ -88,7 +89,6 @@ export default {
 				}
 			};
 
-
 			var _pList=[]
 			for (let i = 0; i < _dom.childNodes.length; i++) {
 				_dom.childNodes[i].textContent && _pList.push(_dom.childNodes[i])
@@ -98,11 +98,10 @@ export default {
 				_in && el.appendChild(_in.cloneNode(true))
 			};
 
-
 			var _blocks = el.querySelectorAll('pre');
-			_blocks.forEach(function(block) {
-				hljs.highlightBlock(block)
-			});
+			for (let i = 0; i < _blocks.length; i++) {
+				hljs.highlightBlock(_blocks[i])
+			}
 		}
 	},
 	created: function() {

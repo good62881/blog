@@ -15,7 +15,7 @@
 
 <script>
 import Vue from 'vue';
-import Pagination from 'element-ui';
+import {Pagination} from 'element-ui';
 Vue.use(Pagination)
 
 //代码高亮
@@ -37,12 +37,10 @@ export default {
 
 			var _dom = document.createElement('div');
 			_dom.innerHTML = binding.value;
-			el.appendChild(_dom.querySelectorAll('pre')[0]);
-
-			var _blocks = el.querySelectorAll('pre');
-			_blocks.forEach(function(block) {
-				hljs.highlightBlock(block)
-			});
+			
+			var _pre=_dom.querySelectorAll('pre')[0];
+			hljs.highlightBlock(_pre)
+			el.appendChild(_pre);
 		}
 	},
 	created: function() {

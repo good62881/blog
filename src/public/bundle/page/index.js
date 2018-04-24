@@ -9,6 +9,9 @@ import VueRouter from 'vue-router';
 Vue.use(Resource);
 Vue.use(VueRouter)
 
+//element-ui的css  重要！开启按需加载时需提前引入与.babelrc配置对应
+import 'element-ui/lib/theme-chalk/index.css';
+
 //公共
 import CTop from '../../../views/page/top.vue';
 import CRight from '../../../views/page/right.vue';

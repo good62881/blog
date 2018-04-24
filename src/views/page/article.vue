@@ -15,7 +15,7 @@
 
 <script>
 import Vue from 'vue';
-import Pagination from 'element-ui';
+import {Pagination} from 'element-ui';
 Vue.use(Pagination)
 
 //代码高亮
@@ -60,9 +60,9 @@ export default {
 
 			//代码高亮
 			var _blocks = el.querySelectorAll('pre');
-			_blocks.forEach(function(block) {
-				hljs.highlightBlock(block)
-			});
+			for (let i = 0; i < _blocks.length; i++) {
+				hljs.highlightBlock(_blocks[i])
+			}
 		}
 	},
 	created: function() {

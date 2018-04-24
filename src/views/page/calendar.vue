@@ -34,7 +34,8 @@ export default {
 	props: ['dayData','monthData','yearData'],
 	data: function () {
 		return {
-			nowDay : new Date().toLocaleDateString(),
+			// nowDay : new Date().toLocaleDateString(),   //不要用toLocaleDateString做计算，每个浏览器返回的不同
+			nowDay : new Date().getFullYear() +'/'+ (new Date().getMonth()+1) +'/'+ new Date().getDate(),
 			year :  new Date().getFullYear(),
 			month :  new Date().getMonth(),
 			showMonth:false,
@@ -157,7 +158,7 @@ export default {
 				i{position: absolute; width:10px; height:10px; overflow: hidden; background-color: #fa5555; border-radius: 50%;}
 				span{position: absolute; padding: 0 5px; margin: -5px 0 0 -5px; overflow: hidden; line-height:16px; font-size: 10px; white-space:nowrap; color: #fff; background-color: #fa5555; border-radius:10px;}
 				&.otherMonth{ color:#ccc; cursor: default;}
-				&.now{background: #2cadff; color: #fff;}
+				&.now{background-color: #2cadff; color: #fff;}
 			}
 		}
 	}

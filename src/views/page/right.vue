@@ -27,19 +27,19 @@
 	<dl class="right_list right_tag">
 		<dt>标签云</dt>
 		<dd>
-			<router-link v-for="item in count.tags" :to="{ name: 'search', query: { type: 'tags',val: item }}">{{item}}</router-link>
+			<router-link v-for="(item,i) in count.tags" :key="i" :to="{ name: 'search', query: { type: 'tags',val: item }}">{{item}}</router-link>
 		</dd>
 	</dl>
 	<dl class="right_list">
 		<dt><router-link to="/">更多</router-link>最新文章</dt>
-		<dd v-for="item in count.newArticle">
+		<dd v-for="(item,i) in count.newArticle" :key="i">
 			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
 			<router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link>
 		</dd>
 	</dl>
 	<dl class="right_list">
 		<dt><router-link to="/code">更多</router-link>最新代码</dt>
-		<dd v-for="item in count.newCode">
+		<dd v-for="(item,i) in count.newCode" :key="i">
 			<span>{{new Date(item.date).getMonth()+1}}-{{new Date(item.date).getDate()}}</span>
 			<router-link :to="{ name: 'articleDetail', params: { id: item._id }}">{{item.name}}</router-link>
 		</dd>
@@ -49,9 +49,10 @@
 
 <script>
 import Vue from 'vue';
-import Input from 'element-ui';
-import Select from 'element-ui';
-import Option from 'element-ui';
+import {Input,Select,Option} from 'element-ui';
+// import Input from 'element-ui';
+// import Select from 'element-ui';
+// import Option from 'element-ui';
 Vue.use(Input);
 Vue.use(Select);
 Vue.use(Option);
@@ -122,7 +123,7 @@ export default {
 		}
 	}
 	&_search{
-		margin-left: -21px; margin-right: -21px; line-height: 40px; background-color: #1f7fbb;
+		margin-left: -21px; margin-right: -21px; padding-top: 6px; height:34px; background-color: #1f7fbb;
 		.el-select{ width:75px;}
 	}
 	&_me{

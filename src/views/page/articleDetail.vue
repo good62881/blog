@@ -29,10 +29,11 @@ export default {
 	},
 	directives: {
 		cutHtml: function(el) {
+			//代码高亮
 			var _blocks = el.querySelectorAll('pre');
-			_blocks.forEach(function(block) {
-				hljs.highlightBlock(block)
-			});
+			for (let i = 0; i < _blocks.length; i++) {
+				hljs.highlightBlock(_blocks[i])
+			}
 		}
 	},
 	watch: {

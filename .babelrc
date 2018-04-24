@@ -1,12 +1,11 @@
 {
-  "presets": [["env", { "modules": false }]],
-  "plugins": [
-    [
-      "component",
-      {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-chalk"
-      }
-    ]
-  ]
+  "presets": [
+    ["env", { "modules": false }]
+  ],
+  "plugins": [["component", [
+    {
+      "libraryName": "element-ui",
+      "styleLibraryName": "theme-chalk"
+    }
+  ]],"syntax-dynamic-import"],
 }

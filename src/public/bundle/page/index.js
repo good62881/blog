@@ -13,15 +13,15 @@ Vue.use(VueRouter)
 import 'element-ui/lib/theme-chalk/index.css';
 
 //公共
-import CTop from '../../../views/page/top.vue';
-import CRight from '../../../views/page/right.vue';
+import CTop from './components/top.vue';
+import CRight from './components/right.vue';
 
 //主体
-const article = () => import('../../../views/page/article.vue')
-const code = () => import('../../../views/page/code.vue')
-const search = () => import('../../../views/page/search.vue')
-const articleDetail = () => import('../../../views/page/articleDetail.vue')
-const picture = () => import('../../../views/page/picture.vue')
+const article = () => import('./components/article.vue')
+const code = () => import('./components/code.vue')
+const search = () => import('./components/search.vue')
+const articleDetail = () => import('./components/articleDetail.vue')
+const picture = () => import('./components/picture.vue')
 
 
 var app = new Vue({

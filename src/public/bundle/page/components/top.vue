@@ -14,7 +14,7 @@
 
 
 <style scoped lang="less" rel="stylesheet/less"> 
-.top{background: url("../../public/images/bg.jpg") no-repeat center top; padding-top: 300px;}
+.top{background: url("../../../images/bg.jpg") no-repeat center top; padding-top: 300px;}
 
 .nav{
 	background: #1f7fbb;
